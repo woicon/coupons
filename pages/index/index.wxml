@@ -1,0 +1,45 @@
+<!--index.wxml-->
+<import src="../../pages/template/couponscard.wxml"/>
+
+<view wx:if="{{!pageloading}}">
+    <loading hidden="{{pageloading}}">加载中</loading>
+</view>
+
+<block wx:elif="{{error}}">
+    <view class='empty'>
+        <view class='icon-member'>
+            <text>{{errorMessage}}</text>
+        </view>
+    </view>
+</block>
+
+<block wx:else>
+    <view class="container" id='container'>
+        <view wx:if="{{banner}}" class='banners' id='banner'>
+            <swiper class='banner' indicator-dots="{{indicatorDots}}" autoplay="{{autoplay}}" interval="{{interval}}" duration="{{duration}}" indicator-dots="true">
+                <swiper-item wx:for="{{banner}}" wx:key="banner" class="banner-item">
+                    <image src="{{item}}" class="slide-image" width="100%" mode="aspectFill"/>
+                </swiper-item>
+            </swiper>
+        </view>
+        <view class="menu {{menuPos?'menu-fixed':''}}" id='menu'>
+            <scroll-view scroll-x="true" bindscroll="scroll" class='menu-warp'>
+                <view style='width:400%'>
+                    <view class='menu-item {{(currMenu==index)?"menu-item-active":""}}' id="{{index}}" wx:for="{{categoryList}}" wx:key="couponMenu" data-id="{{item.categoryId}}" bindtap='couponLoad'>{{item.categoryName}}</view>
+                </view>
+            </scroll-view>
+        </view>
+        
+        <view class='coupons-list'>
+            <template is="indexCoupons" data="{{couponList:couponList,couponType:couponType,receiveStatus:receiveStatus}}" />
+        </view>
+    </view>
+    <include src="../../pages/common/tabbar.wxml"/>
+</block>
+
+<view class="mask {{!regStat?'show':''}}"></view>
+<view class="regvip {{!regStat?'show':''}}" hover-class="regvip-hover" hover="true" bindtap="viewCard">
+    <text>您有一张会员卡可领取</text>
+    <view class="icon ico-diamond"></view>
+    <view class="btn">立即领取</view>
+</view>

@@ -1,0 +1,33 @@
+<!--pages/member/member.wxml-->
+<view class="container">
+    <!--<view class="vipcard">
+        <view class="cardinfo">
+        <view class="icon ico-vippay"></view>
+        <text>西少爷肉夹馍</text>
+        </view>
+        <view class="cardid">NO:{{cardid}}</view>
+    </view>-->
+    <view class="memberhead">
+        <image class="img" src="{{userInfo.avatarUrl}}"></image>
+        <view class="info">
+            <view class="name"> {{userInfo.nickName}}</view>
+            <view class="level">白金会员 8.8折</view>
+        <!--<text class="city">{{userInfo.province}}{{userInfo.city}}</text>-->
+            <view class="ewmpay ico-ewm" bindtap="vipPay"></view>
+        </view>
+    </view>
+
+    <view class="member-col">
+        <view class="col-item" bindtap="viewIntegral">积分<view class="value">{{cardInfo.point}}</view> </view>
+        <view class="col-item">余额 <view class="value">2</view> </view>
+        <view class="col-item">优惠券 <view class="value">4</view> </view>
+    </view>
+
+    <view class="memberlist">
+        <view class="list-item" bindtap="viewIntegral"><view class="icon ico-order"></view> 积分</view>
+        <view class="list-item" bindtap="viewCard"><view class="icon ico-card"></view> 会员卡</view>
+        <view class="list-item" bindtap="topupMoney"><view class="icon ico-mymoney"></view> 会员充值</view>
+        <view class="list-item" bindtap="viewCard"><view class="icon ico-pig"></view> 消费有礼</view>
+    </view>
+</view>
+<include src="../../pages/common/tabbar.wxml"/>

@@ -1,0 +1,103 @@
+.registerform{
+    margin:40rpx;
+}
+.line{
+    display:flex;
+    justify-content:space-between;
+    position:relative;
+    align-items:center;
+}
+
+.line .picker,
+.line input{
+    font-size:28rpx;
+    height:1.4;
+    line-height:1.4;
+    padding:30rpx 0;
+    color:#333;
+}
+.line input{
+    width:auto;
+}
+.line-title{
+    font-size:28rpx;
+    color:#666;
+}
+
+.line:after{
+     content:'';
+     display:block;
+     position:absolute;
+     border-bottom:1px solid #eee;
+     right:0;
+     bottom:0;
+     left:0;
+     transform:scale(.5);
+     transform-origin:0 100%;
+     width:200%;
+}
+
+.line-title+input{
+    text-align:right;
+}
+
+.phonecode{
+    display:inline-block;
+    padding:0 16rpx;
+    color:#fff;
+    background:#eee;
+    border-radius:4rpx;
+    line-height:30px;
+    z-index:100;
+    background:#1CC16F;
+}
+.phonecode.disable{
+    color:#999;
+    background:#eee;
+}
+
+.line-col{
+    color:#666;line-height:4;margin-top:30rpx;text-align:center;
+    position:relative;
+    display:flex;
+    justify-content:center;
+    align-items:center;
+}
+
+.line-col:after,
+.line-col:before{
+    content:'';height:1px;border-bottom:1px dashed #eee;display:line-block;width:90px;margin:0 20rpx;
+}
+
+.blockline{
+    display:block;padding:20rpx 0;
+}
+.line picker{
+    display:flex;justify-content: flex-end;align-items:center;
+}
+.line picker:after{
+    content:'';
+    width:5px;
+    height:5px;
+    border:2px solid #eee;
+    border-left:none;
+    border-bottom:none;
+    transform:rotate(45deg);
+    display:block;
+    margin-left:10rpx;
+}
+.blockline textarea{width:100%;font-size:28rpx;line-height:1.6;}
+.blockline .textarea-wrap{
+    position:relative;padding:16rpx;
+}
+.blockline .textarea-wrap:before{
+    content:'';position:absolute;left:-50%;right:-50%;top:-50%;bottom:-50%;border:1px solid #eee;transform:scale(.5);
+    border-radius:6rpx;
+}
+.blockline .textarea-number{
+    color:#999;font-size:24rpx;
+}
+.blockline .line-title{
+    padding:26rpx 0;
+}
+

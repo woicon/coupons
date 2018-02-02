@@ -1,0 +1,379 @@
+<!-- couponsCard.wxml -->
+<template name="couponscard">
+<block wx:for="{{couponlist.items}}"  wx:key="couponslist">
+    <!-- 可用的优惠券列表 style="background:{{item.cardTemplate.color}}"-->
+    <block wx:if="{{status == 1}}">
+        <view 
+            class="couponsCard {{couponStat[item.couponNo]?'open':''}}" 
+            data-id="{{index}}" 
+            id="{{item.couponNo}}"
+            data-couponsNo="{{item.couponNo}}}" 
+            style="background-image: linear-gradient(-180deg, {{colorList[index]}} 0%, {{item.cardTemplate.color}} 100%)"
+            bindtap="couponDescription" 
+            bindtouchstart="touchStart" 
+            bindtouchend="touchEnd">
+            <view wx:if="{{item.cardTemplate.type == 1 || item.cardTemplate.type == 7}}" class="coupons-value"> 
+                {{item.cardTemplate.discount}}
+                <text>折</text>
+            </view>
+            <view wx:else class="coupons-value">{{item.cardTemplate.reduceCost}}<text>元</text></view>
+            <view class="couponsinfo">
+                <view class="type"> {{item.cardTemplate.title}}</view>
+                <view class="time">有效期至：{{item.cardTemplate.endTime}}</view>
+                <view class="coupondescription" data-open="false">
+                    <view class="couponname">{{item.cardTemplate.couponName}}</view>
+                    <block wx:for="{{couponType}}" wx:for-item ="sItem" wx:for-index = "sindex" wx:key="types">
+                       <view class="type" wx:if="{{item.cardTemplate.type == sindex}}">{{sItem}}</view> 
+                    </block>
+                    <view class="notice">{{item.cardTemplate.notice}}</view>
+                    <view class="description">{{item.cardTemplate.description}}</view>
+                    <view class="servicePhone" wx:if="{{item.cardTemplate.servicePhone}}">客服电话：{{item.cardTemplate.servicePhone}}</view>
+                </view>
+            </view>
+        </view>
+    </block>
+
+    <!-- 失效的优惠券列表 -->
+    <block wx:elif="{{status==3 && item.couponStatus == 2 || item.couponStatus == 3 || item.couponStatus == 4}}">
+        <view data-couponsNo="{{item.couponNo}}}"
+            toggle="false" 
+            class="couponsCard disable {{couponStat[item.couponNo]?'open':''}}" 
+            data-id="{{index}}" 
+            id="{{item.couponNo}}" 
+            style="background:{{item.cardTemplate.color}}" 
+            bindtap="couponDescription">
+            <view wx:if="{{item.cardTemplate.type == 1}}" class="coupons-value"> {{item.cardTemplate.discount}}<text>折</text></view>
+            <view wx:else class="coupons-value">{{item.cardTemplate.reduceCost}}<text>元</text></view>
+            <view class="couponsinfo">
+            <view class="type"> {{item.cardTemplate.title}}</view>
+                <view class="time">有效期至：{{item.cardTemplate.endTime}}</view>
+            </view>
+            <block wx:for="{{couponStatus}}" wx:for-item="sitem">
+                <block wx:if="{{index == item.couponStatus}}">
+                    <view class="tag"><text>{{sitem}}</text></view>
+                </block>
+            </block>
+        </view>
+    </block>
+
+    <!-- 待领取的优惠券列表 -->
+    <block wx:elif="{{ status == 2}}">
+        <view 
+        class="couponsCard" 
+        data-open="{{event.currentTarget.id}}" 
+        id="{{item.cardTemplateId}}"
+        data-cardId="{{item.cardTemplateId}}"
+        data-id="{{index}}"
+        style="background:{{item.color||'#1cc16f'}}" 
+        bindtap="couponDescription">
+            <view wx:if="{{item.type == 1 || item.type == 7}}" class="coupons-value"> 
+                {{item.discount}}
+                <text>折</text>
+            </view>
+            <view wx:else class="coupons-value">{{item.reduceCost}}<text>元</text></view>
+
+            <view class="couponsinfo">
+                <view class="type">{{item.title}}</view>
+                <view class="time">{{item.subTitle}} 
+                    <block wx:if="{{item.leastCost != 0}}">
+                        ，满{{item.leastCost}}元使用
+                    </block>
+                </view>
+                <view wx:if="{{!item.receiveStatus}}" class="couponfav" id="{{item.cardTemplateId}}" bindtap="getCoupon">领取</view>
+                <view wx:else class="status">
+                    <block wx:for="{{receiveStatus}}" wx:key="receiveStatus" wx:for-item = "_item" wx:for-index ="_index">
+                        <block wx:if="{{item.receiveStatus == _index}}">
+                            <text style="color:{{item.color}}">{{_item}}</text>
+                        </block>
+                    </block>
+                </view>
+            </view>
+        </view>
+    </block>
+</block>
+</template>
+
+<template name="couponscards">
+    <block wx:for="{{couponList.items}}" wx:key="couponList">
+        <block wx:if="{{item.couponStatus == status}}">
+            <view class='coupons-card {{(status != 1)?"coupons-card-disable":""}}' bindtap="couponDescription" 
+            data-id="{{index}}" 
+            id="{{item.couponNo}}"
+            data-couponsNo="{{item.couponNo}}">
+                <view class='coupons-info'>
+                        <!-- couponType: ['0代金券','1折扣券','2兑换券','3优惠券','4团购券','5单品代金券','6会员卡','7单品折扣','8单品特价券','9全场满减券'], -->
+                        <!-- <image src='{{item.cardTemplate.bgImg}}' mode="aspectFit"></image> -->
+                        <block wx:if="{{item.cardTemplate.type == 0}}">
+                            <view class='coupons-img  coupons-red'>
+                                <view class='coupons-lines'>{{item.cardTemplate.reduceCost}}<text>元</text></view>
+                            </view>
+                        </block>
+
+                        <block wx:elif="{{item.cardTemplate.type == 1}}">
+                            <view class='coupons-img coupons-red'>
+                                <view class='coupons-lines'>{{item.cardTemplate.discount}}<text>折</text></view>
+                            </view>
+                        </block>
+
+                        <block wx:elif="{{item.cardTemplate.type == 2}}">
+                            <view class='coupons-img coupons-red'>
+                                <view class='coupons-lines ico-jifen-s'></view>
+                            </view>
+                        </block>
+
+                        <block wx:elif="{{item.cardTemplate.type == 3}}">
+                            <view class='coupons-img coupons-red'>
+                                <view class='coupons-lines'>{{item.cardTemplate.reduceCost}}<text>元</text></view>
+                            </view>
+                        </block>
+
+                        <block wx:elif="{{item.cardTemplate.type == 5}}">
+                            <view class='coupons-img coupons-red'>
+                                <view class='coupons-lines'>{{item.cardTemplate.reduceCost}}<text>元</text></view>
+                            </view>
+                        </block>
+
+                        <block wx:elif="{{item.cardTemplate.type == 7}}">
+                            <view class='coupons-img'>
+                            <image src='{{item.cardTemplate.bgImg}}' mode="aspectFit"></image>
+                            </view>
+                        </block>
+
+                        <block wx:elif="{{item.cardTemplate.type == 8}}">
+                            <view class='coupons-img'>
+                                <image src='{{item.cardTemplate.bgImg}}' mode="aspectFit"></image>
+                            </view>
+                        </block>
+
+                        <block wx:elif="{{item.cardTemplate.type == 9}}">
+                            <view class='coupons-img coupons-red'>
+                                <view class='coupons-lines'>{{item.cardTemplate.reduceCost}}<text>元</text></view>
+                            </view>
+                        </block>
+                    
+                    <view class='coupoons-infos'>
+                        <view class='coupons-title'> {{item.cardTemplate.title}}</view>
+                        <view>
+                            <view class='coupons-type'><text>{{couponType[item.cardTemplate.type]}}{{item.cardTemplate.type}}</text></view>
+                            <view class='coupons-subtitle'>
+                                <block wx:if="{{item.cardTemplate.type == 9}}">
+                                    <view>满<text class='price'>{{item.cardTemplate.leastCost}}元</text></view>
+                                    <view>减<text class='coupons-prices'>{{item.cardTemplate.reduceCost}}元</text></view>
+                                </block>
+                                <block wx:else>
+                                    {{item.cardTemplate.description}}
+                                </block>
+                            </view>
+                        </view>
+                    </view>
+                </view>
+            </view>
+        </block>
+    </block>
+</template>
+<template name="indexCoupons">
+    <view class='coupons-card' wx:for="{{couponList.items}}" wx:key="indexCoupons" bindtap="getCoupon" 
+    data-id="{{index}}" 
+    id="{{item.couponNo}}"
+    data-couponsNo="{{item.couponNo}}">
+        <view class='coupons-info'>
+                <!-- couponType: ['0代金券','1折扣券','2兑换券','3优惠券','4团购券','5单品代金券','6会员卡','7单品折扣','8单品特价券','9全场满减券'], -->
+                <!-- <image src='{{item.cardTemplate.bgImg}}' mode="aspectFit"></image> -->
+                <block wx:if="{{item.type == 0}}">
+                    <view class='coupons-img  coupons-red'>
+                        <view class='coupons-lines'>{{item.reduceCost}}<text>元</text></view>
+                    </view>
+                </block>
+
+                <block wx:elif="{{item.type == 1}}">
+                    <view class='coupons-img coupons-red'>
+                        <view class='coupons-lines'>{{item.discount}}<text>折</text></view>
+                    </view>
+                </block>
+
+                <block wx:elif="{{item.type == 2}}">
+                    <view class='coupons-img coupons-red'>
+                        <view class='coupons-lines ico-jifen-s'></view>
+                    </view>
+                </block>
+
+                <block wx:elif="{{item.type == 3}}">
+                    <view class='coupons-img coupons-red'>
+                        <view class='coupons-lines'>{{item.reduceCost}}<text>元</text></view>
+                    </view>
+                </block>
+
+                <block wx:elif="{{item.type == 5}}">
+                    <view class='coupons-img coupons-red'>
+                        <view class='coupons-lines'>{{item.reduceCost}}<text>元</text></view>
+                    </view>
+                </block>
+
+                <block wx:elif="{{item.type == 7}}">
+                    <view class='coupons-img'>
+                    <image src='{{item.bgImg}}' mode="aspectFit"></image>
+                    </view>
+                </block>
+
+                <block wx:elif="{{item.type == 8}}">
+                    <view class='coupons-img'>
+                        <image src='{{item.bgImg}}' mode="aspectFit"></image>
+                    </view>
+                </block>
+
+                <block wx:elif="{{item.type == 9}}">
+                    <view class='coupons-img coupons-red'>
+                        <view class='coupons-lines'>{{item.reduceCost}}<text>元</text></view>
+                    </view>
+                </block>
+            
+            <view class='coupoons-infos'>
+                <view class='coupons-title'> {{item.title}}</view>
+                <view>
+                    <view class='coupons-type'><text>{{couponType[item.type]}}{{item.type}}</text></view>
+                    <view class='coupons-subtitle'>
+                        <block wx:if="{{item.type == 9}}">
+                            <view>满<text class='price'>{{item.leastCost}}元</text></view>
+                            <view>减<text class='coupons-prices'>{{item.reduceCost}}元</text></view>
+                        </block>
+                        <block wx:else>
+                            {{item.description}}
+                        </block>
+                    </view>
+                </view>
+            </view>
+        </view>
+
+        <view wx:if="{{item.receive}}" class='coupons-get'  bindtap="getCoupon" data-id="{{item.cardId}}" data-index="{{index}}">领取</view>
+        <view  class='coupons-get coupons-get-disable' wx:else><view>已领取</view></view>
+    </view>
+</template>
+
+<template name="testcoupons">
+    <view class='coupons-card'>
+            <view class='coupons-info'>
+                <view class='coupons-img'>
+                    <image src='../../image/sku.png' mode="aspectFit"></image>
+                </view>
+                <view class='coupoons-infos'>
+                    <view class='coupons-title'> 温氏纯牛奶 85g 特价券</view>
+                    <view>
+                        <view class='coupons-type'><text>单品特价券</text></view>
+                        <view class='coupons-subtitle'> 
+                            <view>现价:<text class='price'>75元</text></view>
+                            <view>原价:<text class='coupons-prices'>80元</text></view>
+                        </view>
+                    </view>
+                </view>
+            </view>
+            <view class='coupons-get'>领取</view>
+        </view>
+
+        <view class='coupons-card'>
+            <view class='coupons-info'>
+                <view class='coupons-img'>
+                    <image src='../../image/sku.png' mode="aspectFit"></image>
+                </view>
+                <view class='coupoons-infos'>
+                    <view class='coupons-title'> 温氏纯牛奶 85g 抵扣券</view>
+                    <view>
+                        <view class='coupons-type'><text>单品代金券</text></view>
+                        <view class='coupons-subtitle'>到店购买指定商品使用</view>
+                    </view>
+                </view>
+            </view>
+            <view class='coupons-get'>领取</view>
+        </view>
+
+        <view class='coupons-card'>
+            <view class='coupons-info'>
+                <view class='coupons-img'>
+                    <image src='../../image/sku.png' mode="aspectFit"></image>
+                </view>
+                <view class='coupoons-infos'>
+                    <view class='coupons-title'> 温氏纯牛奶 8折扣券</view>
+                    <view>
+                        <view class='coupons-type'><text>单品折扣券</text></view>
+                        <view class='coupons-subtitle'>到店购买指定商品使用</view>
+                    </view>
+                </view>
+            </view>
+
+            <view class='coupons-get'>领取</view>
+        </view>
+
+        <view class='coupons-card'>
+            <view class='coupons-info'>
+                <view class='coupons-img coupons-red'>
+                    <view class='coupons-lines'>8<text>元</text></view>
+                </view>
+                <!-- <image class="coupons-img"  src='../../pages/images/gifimg.jpg' mode="aspectFit"></image> -->
+                <view class='coupoons-infos'>
+                    <view class='coupons-title'> 温氏纯牛奶 85g 抵扣券</view>
+                    <view>
+                        <view class='coupons-type'><text>全场代金券</text></view>
+                        <view class='coupons-subtitle'>到店购买指定商品使用</view>
+                    </view>
+                </view>
+            </view>
+            <view class='coupons-get'>领取</view>
+        </view>
+        <view class='coupons-card'>
+            <view class='coupons-info'>
+                <view class='coupons-img coupons-red'>
+                    <view class='coupons-lines'>8.8<text>折</text></view>
+                </view>
+                <!-- <image class="coupons-img"  src='../../pages/images/gifimg.jpg' mode="aspectFit"></image> -->
+                <view class='coupoons-infos'>
+                    <view class='coupons-title'> 温氏纯牛奶 85g 抵扣券</view>
+                    <view>
+                        <view class='coupons-type'><text>全场折扣券</text></view>
+                        <view class='coupons-subtitle'>
+                            <view>满<text class='price'>500元</text></view>
+                            <view>减<text class='price'>100元</text></view>
+                        </view>
+                    </view>
+                </view>
+            </view>
+            <view class='coupons-get'>领取</view>
+        </view>
+        <view class='coupons-card'>
+            <view class='coupons-info'>
+                <view class='coupons-img'>
+                    <view class='coupons-lines'>8<text>元</text></view>
+                </view>
+                <!-- <image class="coupons-img"  src='../../pages/images/gifimg.jpg' mode="aspectFit"></image> -->
+                <view class='coupoons-infos'>
+                    <view class='coupons-title'> 温氏纯牛奶 85g 抵扣券</view>
+                    <view>
+                        <view class='coupons-type'><text>全场满减券</text></view>
+                        <view class='coupons-subtitle'>
+                            <view>满<text class='price'>500元</text></view>
+                            <view>减<text class='price'>100元</text></view>
+                        </view>
+                    </view>
+                </view>
+            </view>
+            <view class='coupons-get'>领取</view>
+        </view>
+
+        <view class='coupons-card'>
+            <view class='coupons-info'>
+                <view class='coupons-img'>
+                    <view class='coupons-lines'>8<text>元</text></view>
+                </view>
+                <!-- <image class="coupons-img"  src='../../pages/images/gifimg.jpg' mode="aspectFit"></image> -->
+                <view class='coupoons-infos'>
+                    <view class='coupons-title'>免费兑换可乐一瓶50ml兑换券</view>
+                    <view>
+                        <view class='coupons-type'><text>礼品兑换券</text></view>
+                        <view class='coupons-subtitle'>
+                            <view>满<text class='price'>500元</text></view>
+                            <view>减<text class='price'>100元</text></view>
+                        </view>
+                    </view>
+                </view>
+            </view>
+            <view class='coupons-get'>领取</view>
+        </view>
+</template>

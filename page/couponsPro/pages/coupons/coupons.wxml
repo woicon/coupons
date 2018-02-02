@@ -1,0 +1,32 @@
+<!--pages/coupons/coupons.wxml-->
+<scroll-view scroll-y='true' style="position:absolute;left:0;right:0;top:0;bottom:50px;" bindscrolltolower="tolower">
+<view class="container">
+    <block wx:if="{{!failure}}">
+        <block wx:if="{{couponList.items.length == 0}}">
+            <import src="../../pages/template/empty.wxml"/>
+            <template is="empty" data="{{icon:'ico-coup',text:'还没有优惠券'}}"></template>
+        </block>
+        <block wx:else>
+            <view class="couponslist">
+                <import src="../../pages/template/couponscard.wxml"/>
+                <template is="couponscard" data="{{couponlist:couponList,status:1,colorList:colorList}}"></template>
+                <view class="coupinfo"> <view class="viewrules" bindtap="viewRules"> 
+                <view class="ico-help"></view> 使用规则</view> 
+                <view>没有更多可用券 <view class="viewcoupons" bindtap="failureCoupons">查看失效优惠</view></view>
+                </view>
+            </view>
+        </block>
+    </block>
+
+    <block wx:else>
+        <view class="couponslist">
+            <import src="../../pages/template/couponscard.wxml"/>
+            <template is="couponscard" data="{{couponlist:couponList,status:3,couponStatus:couponStatus}}"></template>
+            <view class="coupinfo">
+            <view>没有更多可用券 <view class="viewcoupons" bindtap="effectiveCoupons">查看优惠券</view></view>
+            </view>
+        </view>
+    </block>
+</view>
+</scroll-view>
+<include src="../../pages/common/tabbar.wxml"/>

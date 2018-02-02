@@ -1,0 +1,139 @@
+<!--index.wxml-->
+<view wx:if="{{!pageloading}}">
+    <loading hidden="{{pageloading}}">加载中...</loading>
+</view>
+<block wx:else>
+<view class="localtion">
+    <view class="ico-local"></view>
+    <view class="address">
+    {{address}}
+    </view>
+</view>
+<view class="container">
+    <view class="shop-head">
+        <view class="shop-info">
+            <view class="img">
+                <image src="{{shopinfo.shopimg}}" mode="aspectFill"></image>
+                <view class="photo">共10张</view>
+            </view>
+            <view class="shopname">
+                <view class="shop-title">{{shopinfo.shopname}}</view>
+                <view class="time">营业时间：{{shopinfo.businessHours}}</view>
+                <!-- <text class="icon ico-clock"></text> -->
+            </view>
+        </view>
+        <view class="head-bar">
+            <view class="head-bar-line">
+                <view class="location">{{shopinfo.shoplocation}}</view>
+                <!-- <text class="icon ico-local"></text> -->
+                <!-- <view class="time"><text class="icon ico-clock"></text>{{shopinfo.businessHours}}</view> -->
+            </view>
+            <view class="contact">
+                <view class="navigation"><view class="icon ico-fav"></view></view>
+                <view class="phone" bindtap="callShop" data-phone="{{shopinfo.shoptel}}"><view class="icon ico-phone"></view></view>
+            </view>
+        </view>
+    </view>
+    <!-- <view class="indexad">
+        <view class="head-img">
+            <image src="{{shopinfo.shopimg}}" mode="aspectFill"></image>
+        </view>
+        <view class="head-name">
+            <view class="head-info">
+                <view class="head-name-title">{{shopinfo.shopname}}</view>
+                <view class="head-location"><text class="ico-local"></text>{{shopinfo.shoplocation}}</view>
+            </view>
+            <view class="phone" bindtap="callShop" data-phone="{{shopinfo.shoptel}}"><view class="icon ico-phone"></view></view>
+        </view>
+    </view> -->
+    <view class="indexlist index-grid">
+        <navigator class="list-item" url="/pages/orders/orders">
+            <view class="list-first">
+                <view class="icon ico-cfood-s"></view>
+                <text class="list-text">堂食</text>
+            </view>
+        </navigator>
+        <navigator class="list-item" url="/pages/pay/pay">
+            <view class="list-first">
+                <view class="icon ico-sbag-s"></view>
+                <text class="list-text">自提</text>
+            </view>
+        </navigator>
+        <navigator class="list-item" url="/pages/pay/pay">
+            <view class="list-first">
+                <view class="icon ico-waimai-s"></view>
+                <text class="list-text">外卖</text>
+            </view>
+        </navigator>
+        <navigator class="list-item" url="/pages/registercard/registercard">
+            <view class="list-first">
+                <view class="icon ico-card-s"></view>
+                <text class="list-text">会员卡</text>
+            </view>
+            <view class="list-btn">领取</view>
+        </navigator>
+        <navigator class="list-item" url="/pages/pay/pay">
+            <view class="list-first">
+            <view class="icon ico-mymoney-s"></view>
+            <text class="list-text">消费买单</text>
+            </view>
+            <view class="list-btn">买单</view>
+        </navigator>
+        <navigator class="list-item" url="/pages/giftcard/giftcard">
+            <view class="list-first">
+                <view class="icon ico-gift"></view>
+                <text class="list-text">礼品卡</text>
+            </view>
+            <view class="list-btn">礼品卡</view>
+        </navigator>
+        <navigator class="list-item" url="/pages/pay/pay">
+            <view class="list-first">
+                <view class="icon ico-coup-s"></view>
+                <text class="list-text">优惠券</text>
+            </view>
+            <view class="list-btn">优惠券</view>
+        </navigator>
+        <navigator class="list-item" url="/pages/res/res">
+            <view class="list-first">
+                <view class="icon ico-redbag-s"></view>
+                <text class="list-text">红包</text>
+            </view>
+            <view class="list-btn">红包</view>
+        </navigator>
+        
+    </view>
+
+    <view class="regvip" hover-class="regvip-hover" hover="true" bindtap="registerCard">
+        <text>您有一张会员卡可领取</text>
+        <view class="icon ico-diamond"></view>
+        <view class="btn">立即领取</view>
+    </view>
+
+    <view class="pagetitle">推荐单品</view>
+      <view class="recommended">
+        <view class="item" wx:for="{{recommend}}" wx:key="recommend">
+            <view class="skuimg">
+                <image src="{{item.skuImg}}" mode="widthFix"></image>
+           </view>
+           <view class="name">{{item.skuName}}</view>
+           <!-- <view class="slae">{{item.saleNum}}</view> -->
+        </view>
+      </view>
+
+      <view class="pagetitle">优惠券</view>
+
+      <view class="couplist">
+          <import src="../../pages/template/couponscard.wxml" />
+          <template is="couponscard" data="{{couponlist:couponlist,status:2,receiveStatus:receiveStatus}}" />
+      </view>
+
+     <view class="pagetitle">热门评价</view>
+
+     <view class="comment">
+        <import src="../../pages/template/comment.wxml" />
+        <template is="comments" data="{{comment:comment,status:2}}" />
+     </view>
+     <navigator class="morebtn" bindtap="commentPage"  url="/pages/comment/comment">查看更多评价</navigator>
+</view>
+<include src="../../pages/common/tabbar.wxml"/>
+</block>

@@ -1,0 +1,35 @@
+<!--pages/coupons/coupons.wxml-->
+<import src="../../pages/template/couponscard.wxml"/>
+<view class="container">
+    <view class='tabbars'>
+        <view wx:for="{{couponTab}}" 
+        wx:key="couponTab" 
+        class="tabbars-item {{(currTab == index)?'tabbars-item-active':''}}" 
+        id="{{index}}"
+        data-status="{{index+1}}"
+        bindtap='tabToggle'>{{item}}</view>
+        <view class='tabbars-active' style='left:{{tabPos}}px'></view>
+    </view>
+        <block wx:if="{{couponList.items.length == 0}}">
+            <import src="../../pages/template/empty.wxml"/>
+            <template is="empty" data="{{icon:'ico-coup',text:'还没有优惠券'}}"></template>
+        </block>
+        <block wx:else>
+            <view class="couponslist">
+                <view class='coupons-list'>
+                    <template is="couponscards" data="{{couponList:couponList,couponType:couponType,status:status}}"></template>
+                </view>
+            </view>
+        </block>
+    <!-- <block wx:else>
+        <view class="couponslist">
+            <import src="../../pages/template/couponscard.wxml"/>
+            <template is="couponscard" data="{{couponlist:couponList,status:3,couponStatus:couponStatus}}"></template>
+            <view class="coupinfo">
+            <view>没有更多可用券 <view class="viewcoupons" bindtap="effectiveCoupons">查看优惠券</view></view>
+            </view>
+        </view>
+    </block> -->
+</view>
+
+<include src="../../pages/common/tabbar.wxml"/>
