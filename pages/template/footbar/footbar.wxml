@@ -11,3 +11,19 @@
     </block>
   </view>
 </template>
+
+<template name="indexBar">
+  <view class="footbar {{isPX?'pxview':''}}">
+    <block wx:for="{{tabBar}}" wx:key="pagetab">
+        <view 
+        data-url="{{item.pagePath}}" 
+        class="tabbar-item {{tabCurr == index ?'active':''}}"
+        hover-class="footer-hover"
+        data-id="{{index}}"
+        bindtap='{{item.link?item.link:"goPage"}}'>
+            <view class="icon ico-{{tabCurr == index?item.selectedIconPath:item.iconPath}}"></view>
+            {{item.text}}
+        </view>
+    </block>
+  </view>
+</template>

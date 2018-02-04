@@ -21,15 +21,6 @@
                 </view>
             </view>
         </block>
-    <!-- <block wx:else>
-        <view class="couponslist">
-            <import src="../../pages/template/couponscard.wxml"/>
-            <template is="couponscard" data="{{couponlist:couponList,status:3,couponStatus:couponStatus}}"></template>
-            <view class="coupinfo">
-            <view>没有更多可用券 <view class="viewcoupons" bindtap="effectiveCoupons">查看优惠券</view></view>
-            </view>
-        </view>
-    </block> -->
 </view>
 
 <include src="../../pages/common/tabbar.wxml"/>

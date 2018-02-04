@@ -19,7 +19,12 @@
 .shop-head{
     margin:0 40rpx;
 }
-
+.loading{bottom:180rpx;
+position:fixed;
+left:0;
+right:0;
+top:0;
+}
 .shop-info{
     display:flex;
     flex-wrap:wrap;
@@ -346,4 +351,37 @@ page{
 
 .price{
     color:#FF2828;
+}
+
+.tabbars{
+    display:flex;
+    align-items:center;
+    background:#fff;
+    position:fixed;
+    left:0;top:0;
+    right:0;
+    z-index:99;
+}
+.tabbars-item{
+    width:25%;
+    text-align:center;
+    padding:24rpx 0;
+    font-size:28rpx;
+    font-weight:800;
+    color:#444;
+    transition:.3s
+}
+.tabbars-item-active{
+    color:#FF2828;
+}
+.tabbars-active{
+    width:25%;
+    height:8rpx;
+    position:absolute;
+    bottom:0;
+    background-color:#FF2828;
+    transition:.5s ease-in;
+}
+.coupons-list-member{
+    margin-top:120rpx;
 }

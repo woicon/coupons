@@ -1,6 +1,7 @@
 // pages/couponsdetail/couponsdetail.js
-var app = getApp();
-var code = require("../../utils/code.js");
+const app = getApp()
+const code = require("../../utils/code.js")
+const base = require("../../utils/util.js")
 Page({
   data: {
     coupon:null,

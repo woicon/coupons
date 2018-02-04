@@ -494,12 +494,15 @@ view, text, navigator {
     width:33.333333%;
     font-size: 12px;
     color: #777;
+    transition: .4s;
 }
-
+.footer-hover{
+    color: #FF2828;
+    opacity:.8;
+}
 .footbar .active {
     color: #FF2828;
 }
-
 .pxview{
     padding-bottom:64rpx;
 }

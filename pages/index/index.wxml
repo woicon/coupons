@@ -1,41 +1,64 @@
 <!--index.wxml-->
 <import src="../../pages/template/couponscard.wxml"/>
-
-<view wx:if="{{!pageloading}}">
+<import src="../../pages/template/footbar/footbar.wxml"/>
+<view wx:if="{{!pageloading}}" class="loading">
     <loading hidden="{{pageloading}}">加载中</loading>
 </view>
+<view class="container" id='container' wx:else>
+    <block wx:if="{{pageloading && page === 'index'}}">
+            <view wx:if="{{banner}}" class='banners' id='banner'>
+                <swiper class='banner' indicator-dots="{{indicatorDots}}" autoplay="{{autoplay}}" interval="{{interval}}" duration="{{duration}}" indicator-dots="true">
+                    <swiper-item wx:for="{{banner}}" wx:key="banner" class="banner-item">
+                        <image src="{{item}}" class="slide-image" width="100%" mode="aspectFill"/>
+                    </swiper-item>
+                </swiper>
+            </view>
+            <view class="menu {{menuPos?'menu-fixed':''}}" id='menu'>
+                <scroll-view scroll-x="true" bindscroll="scroll" class='menu-warp'>
+                    <view style='width:400%'>
+                        <view class='menu-item {{(currMenu==index)?"menu-item-active":""}}' id="{{index}}" wx:for="{{categoryList}}" wx:key="couponMenu" data-id="{{item.categoryId}}" bindtap='couponLoad'>{{item.categoryName}}</view>
+                    </view>
+                </scroll-view>
+            </view>
+            
+            <view class='coupons-list'>
+                <template is="indexCoupons" data="{{couponList:couponList,couponType:couponType,receiveStatus:receiveStatus}}" />
+            </view>
+    </block>
 
-<block wx:elif="{{error}}">
-    <view class='empty'>
-        <view class='icon-member'>
-            <text>{{errorMessage}}</text>
+    <block wx:elif="{{pageloading && page === 'coupons'}}">
+        <view class='tabbars'>
+            <view wx:for="{{couponTab}}" 
+            wx:key="couponTab" 
+            class="tabbars-item {{(currTab == index)?'tabbars-item-active':''}}" 
+            id="{{index}}"
+            data-status="{{index+1}}"
+            bindtap='tabToggle'>{{item}}</view>
+            <view class='tabbars-active' style='left:{{tabPos}}px'></view>
         </view>
-    </view>
-</block>
-
-<block wx:else>
-    <view class="container" id='container'>
-        <view wx:if="{{banner}}" class='banners' id='banner'>
-            <swiper class='banner' indicator-dots="{{indicatorDots}}" autoplay="{{autoplay}}" interval="{{interval}}" duration="{{duration}}" indicator-dots="true">
-                <swiper-item wx:for="{{banner}}" wx:key="banner" class="banner-item">
-                    <image src="{{item}}" class="slide-image" width="100%" mode="aspectFill"/>
-                </swiper-item>
-            </swiper>
-        </view>
-        <view class="menu {{menuPos?'menu-fixed':''}}" id='menu'>
-            <scroll-view scroll-x="true" bindscroll="scroll" class='menu-warp'>
-                <view style='width:400%'>
-                    <view class='menu-item {{(currMenu==index)?"menu-item-active":""}}' id="{{index}}" wx:for="{{categoryList}}" wx:key="couponMenu" data-id="{{item.categoryId}}" bindtap='couponLoad'>{{item.categoryName}}</view>
+        <block wx:if="{{couponList.items.length == 0}}">
+            <import src="../../pages/template/empty.wxml"/>
+            <template is="empty" data="{{icon:'ico-coup',text:'还没有优惠券'}}"></template>
+        </block>
+        <block wx:else>
+            <view class="couponslist">
+                <view class='coupons-list coupons-list-member'>
+                    
+                    <template is="couponscards" data="{{couponList:memberCouponList,couponType:couponType,status:status}}"></template>
                 </view>
-            </scroll-view>
+            </view>
+        </block>
+    </block>
+
+    <block wx:elif="{{page === 3}}">
+        <view class='empty'>
+            <view class='icon-member'>
+                <text>{{errorMessage}}</text>
+            </view>
         </view>
-        
-        <view class='coupons-list'>
-            <template is="indexCoupons" data="{{couponList:couponList,couponType:couponType,receiveStatus:receiveStatus}}" />
-        </view>
-    </view>
-    <include src="../../pages/common/tabbar.wxml"/>
-</block>
+    </block>
+    <template is="indexBar" data="{{tabBar:tabBar,isPX:isPX,tabCurr:tabCurr}}"></template>
+</view>
 
 <view class="mask {{!regStat?'show':''}}"></view>
 <view class="regvip {{!regStat?'show':''}}" hover-class="regvip-hover" hover="true" bindtap="viewCard">
