@@ -13,6 +13,24 @@
     border-top:1px dashed #eee;
     position:relative;
 }
+.coupon-cover{
+    position:relative;
+    border-top:1px dashed #eee;
+    padding-top:30rpx;
+}
+.coupon-cover image{
+    vertical-align: bottom;
+}
+.coupon-cover text{
+    position:absolute;
+    left:0;
+    bottom:0;
+    right:0;padding:22rpx 18rpx;
+    line-height:1.8;
+    background:rgba(0, 0, 0, .5);
+    color:#fff;
+    font-size:24rpx;
+}
 .coupon-info .left,
 .coupon-info .right{
     content:'';
