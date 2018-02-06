@@ -6,7 +6,7 @@
     border-radius:12rpx;
     position:relative;
     z-index:1;
-   /* // animation:easyin .5s .2s ease-in both; */
+    /* animation:easyin .5s .2s ease-in both;  */
 }
 .coupon-info{
     margin:40rpx 0 0;
@@ -20,6 +20,8 @@
 }
 .coupon-cover image{
     vertical-align: bottom;
+    width:100%;
+    height:300rpx;
 }
 .coupon-cover text{
     position:absolute;
@@ -47,6 +49,17 @@
 
 .coupon-info .right{
     right:-40rpx;
+}
+.detail-img text{
+    display:block;
+    line-height:1.8;
+    font-size:26rpx;
+}
+.detail-img image{
+    margin:0 auto;
+    width:100%;
+    height:200px;
+    display:block;
 }
 
 .coupon-infos view{
@@ -96,7 +109,8 @@
     overflow:hidden;
 }
 .rqcode .couponno{
-    line-height:2;
+    line-height:2.5;
+    font-weight:700;
     color:#999;
     text-align:center;
     margin-top:0;
@@ -131,7 +145,8 @@
   padding-bottom:30rpx;
 }
 .sku-name{
-    font-size:32rpx;line-height:2.5;
+    font-size:28rpx;
+    line-height:2.5;
 }
 .sku-text{
     font-size:24rpx;color:#999;
@@ -165,7 +180,14 @@
 .description{
     position:relative;
 }
-
+.getcoupon{
+    text-align:center;
+    line-height:68rpx;
+    border-radius:2px;
+    color:#fff;
+    width:60%;
+    margin:0 auto;
+}
 .cbg{
     position:fixed;
     top:0;

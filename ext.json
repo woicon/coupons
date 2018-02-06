@@ -5,7 +5,7 @@
     "ext": {
         "merchantId":"10111174",
         "merchantCode": "merchantCode",
-        "host": "open.weixin.qq.com",
+        "host": "https://opentest.liantuobank.com/api/",
         "appId": "wx13c67157a3d0a74e"
     }
 }

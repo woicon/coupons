@@ -7,7 +7,7 @@ Page({
         coupon: null,
         couponStatus: ['未生效', '可使用', '已使用', '已失效', '已过期', '已删除', '已锁定'],
         couponType: ['代金券', '折扣券', '兑换券', '优惠券', '团购券', '单品代金券', '会员卡', '单品折扣'],
-        toggle: [false, false, false],
+        toggle: [false, true, false],
         pageloading: false,
         businessService: {
             BIZ_SERVICE_DELIVER: '外卖服务',
@@ -16,6 +16,7 @@ Page({
             BIZ_SERVICE_FREE_WIFI: '免费wifi'
         }
     },
+
     toggleTap: function (e) {
         var that = this;
         var _toggle = this.data.toggle;
@@ -25,57 +26,124 @@ Page({
             toggle: _toggle
         });
     },
+    
+    //领取优惠券
+    getCoupon: function (e) {
+        var that = this
+        let memberInfo = wx.getStorageSync("memberCardInfo")
+        var parmas = {
+            cardIds: e.target.dataset.id,
+            openId: app.api.parmas.openId,
+            merchantId: app.api.parmas.merchantId,
+            memberId: memberInfo.memberId
+        }
+        let couponIndex = e.target.dataset.index
+        app.jsData('couponGet', parmas).then((res) => {
+            if (res.returnCode === 'S') {
+                wx.showToast({
+                    title: '领取成功',
+                    icon: 'success',
+                    duration: 2000
+                })
+                let _couponList = that.data.coupon
+                _couponList.receive = false
+                that.setData({
+                    coupon: _couponList
+                })
+
+                var pages = getCurrentPages()
+                var prevPage = pages[pages.length - 2]
+
+                let indexCouponList = prevPage.data.couponList
+                indexCouponList.items[that.data.currItems].receive = false
+
+                prevPage.setData({
+                    couponList: indexCouponList,
+                    resMemberCoupon:true,
+                })
+            }
+        })
+    },
 
     onLoad: function (options) {
-        var that = this
-        var parmas = {
-            openId: app.api.parmas.openId,
-            couponNo: options.id || "907325499011624335"
+        let that = this
+        console.log(options)
+        if (options.id){
+            that.setData({
+                currItems: options.id
+            })
         }
-        wx.request({
-            url: app.api.host + 'couponDetail.htm',
-            data: {
-                json: parmas,
-            },
-            success: (res) => {
-                console.log(res)
-                let _businessService = res.data.coupon.cardTemplate.businessService;
-                let businessService = _businessService.split(',')
-                let size = code.size()
-                let endDate = new Date(res.data.coupon.endDate)
+        if (options.data){
+            let coupon = JSON.parse(options.data)
+            console.log(coupon)
+            setDetail(coupon)
+        }else{
+            let parmas = {
+                openId: app.api.parmas.openId,
+                couponNo: options.id || "907325499011624335"
+            }
+            app.jsData('couponDetail', parmas).then((res) => {
+                let coupon = res.coupon.cardTemplate
+                coupon.couponNo = res.coupon.couponNo
+                console.log(coupon)
+                setDetail(coupon)
+                
+            }).catch((error) => {
+                console.log(error)
+            })
+        }
+
+        //设置详情
+        function setDetail(coupon){
+            let _businessService = coupon.businessService,
+                businessService = _businessService.split(',')
+            if (coupon.dateType == 1){
                 that.setData({
-                    coupon: res.data.coupon.cardTemplate,
-                    color: res.data.coupon.cardTemplate.color,
-                    couponNo: res.data.coupon.couponNo,
-                    service: businessService,
-                    qrSize: size.w,
-                    endDate: base.formatTime(endDate),
-                    pageloading: true
+                    endTime: base.formatTime(new Date(coupon.endTime)),
+                    beginTime: base.formatTime(new Date(coupon.beginTime)),
                 })
+            }
+
+            if (coupon.forbiddenTimes != '') {
+                let forbiddenTimes = coupon.forbiddenTimes
+                let _forbiddenTimes = forbiddenTimes.replace(/,/g, '至')
+                coupon.forbiddenTimes = _forbiddenTimes.split('^')
+            }
+
+            let size = code.size()
+            that.setData({
+                coupon: coupon,
+                color: coupon.color,
+                couponNo:coupon.couponNo,
+                service: businessService,
+                qrSize: size.w,
+                pageloading: true
+            })
+
+            if (coupon.receiveCardNo || coupon.couponNo ){
                 let sizes = that.data.qrSize
-                let qrcode = "907325499011624335" //res.data.coupon.couponNo || ;
+                let qrcode = coupon.receiveCardNo || coupon.couponNo
                 //绘制二维码与条形码
                 code.qr(qrcode, "qrcodecav", sizes, sizes)
                 code.bar(qrcode, "barcodecav", sizes, 40)
-                wx.setNavigationBarColor({
-                    frontColor: '#ffffff',
-                    backgroundColor: res.data.coupon.cardTemplate.color,
-                });
-                wx.setNavigationBarTitle({
-                    title: res.data.coupon.cardTemplate.title,
-                })
             }
-        });
-    },
-    onReady: function () {
-    },
-    onShow: function () {
-    },
-    onHide: function () {
 
+            wx.setNavigationBarColor({
+                frontColor: '#ffffff',
+                backgroundColor: coupon.color,
+            })
+
+            wx.setNavigationBarTitle({
+                title: coupon.title,
+            })
+        }
+    },
+    onHide:function(){
+        let that = this
+        app.getCoupons = true
     },
     onUnload: function () {
-
+        
     },
     onPullDownRefresh: function () {
 

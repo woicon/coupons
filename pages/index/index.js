@@ -22,6 +22,13 @@ Page({
         tabPos: 0,
         status: 1,
         couponStatus: ['未生效', '可使用', '已使用', '已失效', '已过期', '已删除', '已锁定'],
+        hasMore: false,
+        hasRefesh: false,
+        page:'coupons',
+        toBottom:false,
+        memberCouponMore:true,
+        hasMore:true,
+        indexBottom:false,
         tabBar: [
             {
                 pagePath: "index",
@@ -57,7 +64,6 @@ Page({
 
     onLoad: function (options) {
         var that = this
-        console.log('load load')
         let parmas = {
             merchantId: app.api.parmas.merchantId
         }
@@ -84,18 +90,40 @@ Page({
         })
     },
 
-    memberCoupons:function(){
+    memberCoupons: function (currentPage){
         //获取用户优惠券
         let that = this
         let memberCoupons = (memberInfo) =>{
             let couponsParmas = {
                 superMerchantId: app.api.parmas.merchantId,
-                memberId: memberInfo.memberId
+                memberId: memberInfo.memberId,
+                currentPage: currentPage || 1
             }
             app.jsData('couponList', couponsParmas).then( (memberCoupons) => {
-                that.setData({
-                    memberCouponList: memberCoupons,
-                })
+                console.log(memberCoupons)
+                if (currentPage){
+                    let _memberCoupons = that.data.memberCouponList
+                    if (memberCoupons.items.length == 0){
+                        console.log('没有更多了')
+                        that.setData({
+                            memberCouponMore:false
+                        })
+                    }else{
+                        _memberCoupons.items.push(memberCoupons.items)
+                        memberCoupons.items.forEach((item)=>{
+                            _memberCoupons.items.push(item)
+                        })
+                        _memberCoupons.currentPage = memberCoupons.currentPage
+
+                        that.setData({
+                            memberCouponList: _memberCoupons,
+                        })
+                    }
+                }else{
+                    that.setData({
+                        memberCouponList: memberCoupons,
+                    })
+                }
             })
         }
         try {
@@ -111,32 +139,100 @@ Page({
             console.log(error)
         }
     },
-
+    //领取优惠券
+    getCoupon: function (e) {
+        var that = this
+        let memberInfo = wx.getStorageSync("memberCardInfo")
+        var parmas = {
+            cardIds: e.target.dataset.id,
+            openId: app.api.parmas.openId,
+            merchantId: app.api.parmas.merchantId,
+            memberId: memberInfo.memberId
+        }
+        let couponIndex = e.target.dataset.index
+        app.jsData('couponGet', parmas).then((res) => {
+            if (res.returnCode === 'S') {
+                // wx.showToast({
+                //     title: '领取成功',
+                //     icon: 'success',
+                //     duration: 2000
+                // })
+                wx.showModal({
+                    title: '领取成功',
+                    content: '微信支付即自动核销，每次支付仅限使用一张优惠券',
+                    showCancel:false
+                })
+                let _couponList = that.data.couponList
+                _couponList.items[couponIndex].receive = false
+                that.setData({
+                    couponList: _couponList
+                })
+                that.memberCoupons()
+            }
+        })
+    },
     couponLoad: function (e) {
         let that = this
+        try{
+            if(e.currentPage){
+                that.setData({
+                    indexBottom: false
+                })
+            }
+        } catch(error){
+            console.log(error)
+        }
         let couponByCategory = (memberInfo) => {
             let params = {
                 categoryId: e.catId || e.target.dataset.id,
-                memberId: memberInfo.memberId
+                memberId: memberInfo.memberId,
+                currentPage: e.currentPage || 1
             }
             let currId = (e.catId) ? "0" : e.currentTarget.id
             app.jsData('wechatAppCouponByCategory', params).then( (coupon) => {
                 console.log(coupon)
-                that.setData({
-                    couponList: coupon,
-                    currMenu: currId,
-                    pageloading: true,
-                    page:'index'
-                })
-                setTimeout(function(){
-                    wx.createSelectorQuery().select('#banner').boundingClientRect( (rect) => {
+                if (e.currentPage){
+                    let _couponList = that.data.couponList
+                    if (!coupon.items){
                         that.setData({
-                            bannerHeight: rect.height
+                            hasMore:false
                         })
-                    }).exec()
-                }.bind(this),100)
+                    }else{
+                        coupon.items.forEach((item) => {
+                            _couponList.items.push(item)
+                        })
+                        _couponList.currentPage = e.currentPage
+                        that.setData({
+                            couponList: _couponList,
+                            currMenu: currId,
+                            pageloading: true,
+                            page: 'index'
+                        })
+                    }
+                }else{
+                    that.setData({
+                        couponList: coupon,
+                        currMenu: currId,
+                        pageloading: true,
+                        page: 'index'
+                    })
+                }
+                if(that.data.banner !=null){
+                    setTimeout(function(){
+                        wx.createSelectorQuery().select('#banner').boundingClientRect( (rect) => {
+                            that.setData({
+                                bannerHeight: rect.height
+                            })
+                        }).exec()
+                    }.bind(this),100)
+                }else{
+                    that.setData({
+                        menuPos:true
+                    })
+                }
             })
         }
+
         try{ 
             let memberInfo = wx.getStorageSync("memberCardInfo")
             if (memberInfo){
@@ -150,50 +246,25 @@ Page({
             console.log(error)
         }
     },
-    onPageScroll: function (e) {
+    indexScroll: function (e) {
         let that = this
         //分类位置
-        var query = wx.createSelectorQuery()
-        let bannerHeight = that.data.bannerHeight
-        query.select('#container').boundingClientRect( (rect) => {
-            let _menuPos = (rect.top > -bannerHeight) ? false : true
-            that.setData({
-                menuPos: _menuPos
-            })
-        }).exec()
-    },
-
-    //领取优惠券
-    getCoupon: function (e) {
-        var that = this
-        let memberInfo = wx.getStorageSync("memberCardInfo")
-        var parmas = {
-            cardIds: e.target.dataset.id,
-            openId: app.api.parmas.openId,
-            merchantId: app.api.parmas.merchantId,
-            memberId: memberInfo.memberId
-        }
-        let couponIndex = e.target.dataset.index
-        app.jsData('couponGet', parmas).then( (res) => {
-            if(res.returnCode === 'S'){
-                wx.showToast({
-                    title: '领取成功',
-                    icon: 'success',
-                    duration: 2000
-                })
-                let _couponList = that.data.couponList
-                _couponList.items[couponIndex].receive = false
+        if (that.data.banner != null) {
+            var query = wx.createSelectorQuery()
+            let bannerHeight = that.data.bannerHeight
+            query.select('#banner').boundingClientRect( (rect) => {
+                let _menuPos = (rect.top > -bannerHeight) ? false : true
                 that.setData({
-                    couponList:_couponList
+                    menuPos: _menuPos
                 })
-                that.memberCoupons()
-            }
-        })
+            }).exec()
+        }
     },
-
+    
     //查看优惠券详情
     couponDescription: function (e) {
         let that = this
+        console.log(e)
         let touchTime = that.data.touchEnd - that.data.touchStart
         let couponNo = e.currentTarget.id
         let parmas = {
@@ -244,9 +315,16 @@ Page({
                 }
             })
         } else {
-            wx.navigateTo({
-                url: '/pages/couponsdetail/couponsdetail?id=' + e.currentTarget.id,
-            });
+            if (e.currentTarget.dataset.index){
+                let data = JSON.stringify(that.data.couponList.items[e.currentTarget.dataset.id])
+                wx.navigateTo({
+                    url: '/pages/couponsdetail/couponsdetail?data=' + data + '&id=' + e.currentTarget.dataset.id + '&catId=' + that.data.categoryList[that.data.currMenu].categoryId
+                })
+            }else{
+                wx.navigateTo({
+                    url: '/pages/couponsdetail/couponsdetail?id=' + e.currentTarget.id,
+                })
+            }
         }
     },
 
@@ -254,16 +332,71 @@ Page({
         app.viewCard()
     },
 
+    loadMore:function(e){
+        let that = this
+        that.setData({
+            toBottom:true
+        })
+        let currentPage = that.data.memberCouponList.currentPage+1
+        if(that.data.memberCouponMore){
+            that.memberCoupons(currentPage)
+        }
+    },
+    indexMore:function(e){
+        let that = this
+        that.setData({
+            indexButtom:true
+        })
+        let currentPage = that.data.couponList.currentPage+1
+        console.log(currentPage)
+        that.setData({
+            indexBottom: true
+        })
+        if(that.data.hasMore){
+            that.couponLoad({
+                catId: that.data.categoryList[that.data.currMenu].categoryId,
+                currentPage:currentPage
+            })
+        }
+    },
+    onReachBottom:function(e){
+        let that = this
+        that.setData({
+            hasMore:true
+        })
+    },
+
+    //个人优惠券切换
     tabToggle: function (e) {
         let that = this
-        console.log(e)
+        let memberCouponList = that.data.memberCouponList.items
+        let status = e.target.dataset.status
+        let statusNum = []
+        let couponEmpty = null
+        memberCouponList.forEach((item)=>{
+            if(item.couponStatus === status){
+                statusNum.push(status)
+            }
+        })
+        if(statusNum.length === 0){
+            couponEmpty = true
+        }
         that.setData({
             currTab: e.target.id,
             tabPos: e.target.offsetLeft,
-            status: e.target.dataset.status
+            status: status,
+            toBottom:false,
+            couponEmpty: couponEmpty
         })
     },
-    
+
+    onHide:function(){
+        //用户优惠券状态
+        this.setData({
+            resMemberCoupon:false,
+        })
+    },
+
     onShow: function (options) {
         let that = this
         try{
@@ -274,6 +407,9 @@ Page({
             }
         }catch(error){
             console.log(error)
+        }
+        if(that.data.resMemberCoupon){
+            that.memberCoupons()  //刷新用户优惠券
         }
     }
 })

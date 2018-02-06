@@ -4,6 +4,7 @@ App({
         //第三方平台获取扩展参数
         let extConfig = wx.getExtConfigSync ? wx.getExtConfigSync() : {}
         that.api.appid = extConfig.appId
+        that.api.host = extConfig.host
         that.api.parmas.merchantId = extConfig.merchantId
         let sessionKey = wx.getStorageSync("sessionKey")
         if (!sessionKey) {
@@ -17,7 +18,7 @@ App({
         })
     },
     api: {
-        host: 'https://opentest.liantuobank.com/api/',
+        host:null,
         appid:null,
         parmas: {
             memberId: null,
@@ -29,7 +30,6 @@ App({
         //用户登录
         wx.login({
             success: function (res) {
-                console.log(res)
                 if (res.code) {
                     //获取openid
                     that.request('wechatAppSession', {
@@ -37,9 +37,10 @@ App({
                         jsCode: res.code
                     })
                         .then(function (appSession) {
-
                             let result = appSession.data.result
+                            console.log('有没有result')
                             console.log(result)
+                            
                             //获取用户授权
                             wx.getUserInfo({
                                 withCredentials: true,
@@ -57,6 +58,7 @@ App({
                                             url: that.api.host + 'wechatAppUserInfo.htm',
                                             data: parmas,
                                             success: function (userInfo) {
+                                                console.log('未关注公众号')
                                                 console.log(userInfo)
                                                 that.api.parmas.unionId = userInfo.data.result.map.unionId
                                                 result.unionid = userInfo.data.result.map.unionId
@@ -68,6 +70,7 @@ App({
                                         that.api.parmas.unionId = result.unionid
                                         wx.setStorageSync("sessionKey", result)
                                         that.getMember(result)
+                                        console.log('已经关注了公众号')
                                     }
                                 },
                                 fail: function (failData) {
@@ -77,11 +80,19 @@ App({
                                     })
                                 }
                             })
-                        }).catch(function (error) {
+                        })
+                        .catch(function (error) {
                             console.log(error)
                         })
                 } else {
-                    console.log('登录失败')
+                    
+                    let currPage = that.currPage()
+                    currPage.setData({
+                        error: true,
+                        pageloading: true,
+                        errorMessage: '登录失败'
+                    })
+
                 }
             },
             fail: function (error) {
@@ -97,7 +108,6 @@ App({
             unionId: sessionKey.unionid
         }
         that.jsData('memberCardInfo', parmas).then(function (memberInfo) {
-            console.log("GETMEMBER GETMEMBER")
             console.log(memberInfo)
             let _curPage = that.currPage()
             that.api.parmas.memberId = memberInfo.memberId
@@ -177,7 +187,7 @@ App({
     globalData: {
         userInfo: null,
     },
-
+    
     viewCard: function () {
         let that = this
         try {
@@ -185,15 +195,10 @@ App({
             const data = memberCardInfo
             if (data.returnCode === 'F') {
                 //获取会员卡模板信息
-                that.jsData('memberCardTemplate', { merchantId: that.api.parmas.merchantId })
+                that.jsData('memberCardTemplate', {merchantId:that.api.parmas.merchantId})
                     .then(function (memberCard) {
-                        console.log(memberCard)
                         let cardData = memberCard.wechatExtraData || {}
-                        wx.showLoading({
-                            title: 'waiting',
-                        })
                         cardData.outer_str = 'unionid_' + that.api.parmas.unionId
-                        console.log(cardData)
                         //跳转到微信开卡组件
                         wx.navigateToMiniProgram({
                             appId: "wxeb490c6f9b154ef9",

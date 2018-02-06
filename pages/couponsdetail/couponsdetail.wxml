@@ -3,40 +3,117 @@
     <loading hidden="{{pageloading}}">加载中</loading>
 </block>
 <view wx:else class="coupons-detail">
+
     <view class="coupons-logo">
         <image mode="scaleToFill" src="{{coupon.logo}}"></image>
     </view>
+
     <view class="coupon-name">{{coupon.title}}</view>
-    <!-- <view wx:if="{{coupon.type == 1 || coupon.type == 7}}"  class="cost"><text class="price">{{coupon.discount}}</text>折</view>
-    <view wx:else class="cost">¥<text class="price">{{coupon.reduceCost}}</text></view> -->
-    <!-- <view class="coupon-infos">
-        <!-- {{coupon.beginTime}}至 
-        <view class="classname"> <text class="icon ico-clock"></text> 有效期：{{coupon.endTime}}</view>
-        <view class="classname"><text class="icon ico-moneyr"></text>满{{coupon.leastCost}}元可用</view>
-    </view> -->
+
+    <block wx:if="{{coupon.receive}}">
+        <view class='getcoupon' 
+        style='background:{{color}}' 
+        data-id="{{coupon.cardId}}"
+        bindtap='getCoupon'>领取优惠券</view>
+    </block>
+    
     <view class="coupon-info">
         <view class="left" style="background:{{color}}"></view>
         <view class="right" style="background:{{color}}"></view>
-         <view class="rqcode">
-            <view class="rqcode-img">
-                <canvas canvas-id="barcodecav" style="width:{{qrSize}}px;height:40px"/>
-            </view>
-            <view class="couponno nos">{{couponNo}}</view>
-        </view> 
-        <view class="ewm">
-            <view class="ewm-img">
-                <canvas bindtap="previewImg" hidden="{{canvasHidden}}" style="width:{{qrSize}}px;height:{{qrSize}}px" canvas-id="qrcodecav"/>
-            </view>
-            <view class="couponno">{{coupon.notice}}</view>
-        </view>
         <view wx:if="{{coupon.coverImg != ''}}" class='coupon-cover'>
-            <image src='{{coupon.coverImg}}'></image>
+            <image src='{{coupon.coverImg}}' mode='scaleToFill'></image>
             <text>{{coupon.coverAbstract}}</text>
         </view>
+
+        <view  class="title {{toggle[1] ? 'open':''}}" bindtap="toggleTap" data-id="1">优惠券详情</view>
+          <view class="description {{!toggle[1] ? 'hide':''}}">
+            <view wx:if="{{coupon.type == 0 }}" class="description-text">
+                <view class="description-title">优惠说明：</view>
+                <text>价值{{coupon.reduceCost}}元代金券一张，<block wx:if="{{coupon.leastCost != 0}}">消费满{{coupon.leastCost}}可用，</block>不可与其他优惠共享。</text>
+            </view>
+            <view wx:elif="{{coupon.type == 7 }}" class="description-text">
+                <view class="description-title">优惠说明：</view>
+                <text>凭此券消费打{{coupon.discount}}折，适用于购买{{coupon.goodItem.itemName}}使用，<block wx:if="{{coupon.leastCost != 0}}">消费满{{coupon.leastCost}}可用，</block>不可与其他优惠共享。</text>
+            </view>
+            <view wx:elif="{{coupon.type == 5 }}" class="description-text">
+                <view class="description-title">优惠说明：</view>
+                <text>价值{{coupon.reduceCost}}元代金券一张，适用于购买{{coupon.goodItem.itemName}}使用，<block wx:if="{{coupon.leastCost != 0}}">消费满{{coupon.leastCost}}可用，</block>不可与其他优惠共享。</text>
+            </view>
+            <view wx:elif="{{coupon.type == 1 }}" class="description-text">
+                <view class="description-title">优惠说明：</view>
+                <text>凭此券消费打{{coupon.discount}}折，<block wx:if="{{coupon.leastCost != 0}}">消费满{{coupon.leastCost}}可用，</block>不可与其他优惠共享。</text>
+            </view>
+            <view wx:elif="{{coupon.type == 9 }}" class="description-text">
+                <view class="description-title">优惠说明：</view>
+                <text>凭此消费券，<block wx:if="{{coupon.leastCost != 0}}">全场消费满{{coupon.leastCost}}元，减{{coupon.reduceCost}}元，</block>不可与其他优惠共享。</text>
+            </view>
+            <view class="description-text" wx:if="{{coupon.businessService != ''}}">
+                <view class="description-title">商户服务：</view>
+                <block wx:for="{{businessService}}" wx:key="businessService">
+                    <block wx:for="{{service}}" wx:key="service" wx:for-item="_item" wx:for-index="_index">
+                        <text class="tag" wx:if="{{index == _item}}">{{item}}</text>
+                    </block>
+                </block>
+            </view>
+            <view class='description-text' wx:if="{{coupon.exchangePoint && coupon.exchangePoint != ''}}">
+                <view class="description-title">积分兑换：</view>   
+                <text>{{coupon.exchangePoint}}分</text>
+            </view>
+            <view class="description-text" wx:if="{{coupon.dateType == 1}}">
+                <view class="description-title">有效日期：</view>
+                <text>{{beginTime}} 至 {{endTime}}</text>
+            </view>
+            <view class='description-text' wx:elif="{{coupon.dateType == 2}}">
+                <view class='description-title'>有效天数：</view>
+                <text>{{coupon.fixedTerm}}天</text>
+            </view>
+
+            <view class="description-text">
+                <view class="description-title">使用提醒：</view>
+                <text>{{coupon.notice}}</text>
+            </view>
+
+            <view class="description-text">
+                <view class="description-title">使用须知：</view>
+                <text>{{coupon.description}}</text>
+            </view>
+
+            <view class="description-text" wx:if="{{coupon.forbiddenTimes != ''}}">
+                <view class="description-title">不可用时：</view>
+                <text style='margin-bottom:6rpx;' class='tag' wx:for="{{coupon.forbiddenTimes}}" wx:key="forbiddenTimes">{{item}}</text>
+            </view>
+
+            <view  class="description-text phone" wx:if="{{coupon.servicePhone != ''}}">
+                <view class="description-title">客服电话：</view>
+                <text>{{coupon.servicePhone}}</text>
+            </view>
+          </view>
+
+        <block  wx:if="{{coupon.receiveCardNo || coupon.couponNo}}">
+            <view class="title {{toggle[3] ? 'open':''}}" bindtap="toggleTap" data-id="3">优惠码</view>
+            <view class="description {{!toggle[3] ? 'hide':''}}">
+                <view class="rqcode">
+                    <view class="rqcode-img">
+                        <canvas canvas-id="barcodecav" style="width:{{qrSize}}px;height:40px"/>
+                    </view>
+                    <view class="couponno nos">{{coupon.receiveCardNo||coupon.couponNo}}</view>
+                </view>
+                <view class="ewm">
+                    <view class="ewm-img">
+                        <canvas bindtap="previewImg" hidden="{{canvasHidden}}" style="width:{{qrSize}}px;height:{{qrSize}}px" canvas-id="qrcodecav"/>
+                    </view>
+                    <view class="couponno">{{coupon.notice}}</view>
+                </view>
+            </view>
+        </block>
+
+        
+
+        
+
         <block wx:if="{{coupon.goodItems && coupon.goodItems.length != 0}}">
             <view class="title {{toggle[0] ? 'open':''}}" bindtap="toggleTap" data-id="0">适用优惠商品
             </view>
-
               <view class="sku {{!toggle[0] ? 'hide':''}}" 
               wx:for="{{coupon.goodItems}}" 
               wx:key="goodItems">
@@ -47,70 +124,18 @@
                   <view class="sku-price price">¥{{item.itemPrice}}</view>
               </view>
         </block>
-        
-        
-        <view  class="title {{toggle[1] ? 'open':''}}" bindtap="toggleTap" data-id="1">优惠券详情</view>
-          <view class="description {{!toggle[1] ? 'hide':''}}">
-              <view wx:if="{{coupon.type == 0 }}" class="description-text">
-                  <view class="description-title">优惠说明：</view>
-                  <text>价值{{coupon.reduceCost}}元代金券一张，<block wx:if="{{coupon.leastCost != 0}}">消费满{{coupon.leastCost}}可用，</block>不可与其他优惠共享。</text>
-              </view>
-              <view wx:elif="{{coupon.type == 7 }}" class="description-text">
-                  <view class="description-title">优惠说明：</view>
-                  <text>凭此券消费打{{coupon.discount}}折，适用于购买{{coupon.goodItem.itemName}}使用，<block wx:if="{{coupon.leastCost != 0}}">消费满{{coupon.leastCost}}可用，</block>不可与其他优惠共享。</text>
-              </view>
-              <view wx:elif="{{coupon.type == 5 }}" class="description-text">
-                  <view class="description-title">优惠说明：</view>
-                  <text>价值{{coupon.reduceCost}}元代金券一张，适用于购买{{coupon.goodItem.itemName}}使用，<block wx:if="{{coupon.leastCost != 0}}">消费满{{coupon.leastCost}}可用，</block>不可与其他优惠共享。</text>
-              </view>
-              <view wx:elif="{{coupon.type == 1 }}" class="description-text">
-                  <view class="description-title">优惠说明：</view>
-                  <text>凭此券消费打{{coupon.discount}}折，<block wx:if="{{coupon.leastCost != 0}}">消费满{{coupon.leastCost}}可用，</block>不可与其他优惠共享。</text>
-              </view>
-              <view class="description-text" wx:if="{{coupon.businessService != ''}}">
-                  <view class="description-title">商户服务：</view>
-                  <block wx:for="{{businessService}}" wx:key="businessService">
-                      <block wx:for="{{service}}" wx:key="service" wx:for-item="_item" wx:for-index="_index">
-                          <text class="tag" wx:if="{{index == _item}}">{{item}}</text>
-                      </block>
-                  </block>
-              </view>
-              <view class='description-text' wx:if="{{coupon.exchangePoint != ''}}">
-                     <view class="description-title">积分兑换：</view>   
-                     <text>{{coupon.exchangePoint}}分</text>
-              </view>
-              <view class="description-text">
-                  <view class="description-title">有效日期：</view>
-                  <text>{{endDate}}</text>
-              </view>
-                <view class="description-text">
-                  <view class="description-title">使用提醒：</view>
-                  <text>{{coupon.notice}}</text>
-              </view>
-              <view class="description-text">
-                  <view class="description-title">使用须知：</view>
-                  <text>{{coupon.description}}</text>
-              </view>
-              <view class="description-text" wx:if="{{coupon.forbiddenTimes != ''}}">
-                <view class="description-title">不可用：</view>
-                <text>{{coupon.forbiddenTimes}}</text>
-              </view>
 
-              <view  class="description-text phone" wx:if="{{coupon.servicePhone != ''}}">
-                  <view class="description-title">客服电话：</view>
-                  <text>{{coupon.servicePhone}}</text>
-              </view>
-          </view>
+        
         
         
         <block wx:if="{{coupon.cardTextImages && coupon.cardTextImages.length != 0}}" >
-        <view class="title {{toggle[2] ? 'open':''}}" bindtap="toggleTap" data-id="2">图文详情</view>
+            <view class="title {{toggle[2] ? 'open':''}}" bindtap="toggleTap" data-id="2">图文详情</view>
             <view class="description {{!toggle[2] ? 'hide':''}}">
-                <view wx:for="{{coupon.cardTextImages}}" wx:key="cardTextImages">
+                <view wx:for="{{coupon.cardTextImages}}" wx:key="cardTextImages" class='detail-img'>
                     <image src='{{item.imgUrl}}'></image>
                     <text>{{item.text}}</text>
                 </view>
-          </view>
+            </view>
         </block>
     </view>
     
