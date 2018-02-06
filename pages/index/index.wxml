@@ -30,7 +30,7 @@
             </view>
             <view class="menu {{menuPos?'menu-fixed':''}}" id='menu'>
                 <scroll-view scroll-x="true" bindscroll="scroll" class='menu-warp'>
-                    <view style='width:400%'>
+                    <view class='memnu-warp-inner'>
                         <view class='menu-item {{(currMenu==index)?"menu-item-active":""}}' 
                         id="{{index}}"
                         wx:for="{{categoryList}}" 

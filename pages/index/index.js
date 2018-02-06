@@ -81,6 +81,7 @@ Page({
         })
         .then(function(){
             that.memberCoupons()
+            console.log(app.globalData.isPX)
             that.setData({
                 isPX: app.globalData.isPX
             })

@@ -13,11 +13,12 @@
     z-index:100;
     display: block;
 }
-.loading{bottom:180rpx;
-position:fixed;
-left:0;
-right:0;
-top:0;
+.loading{
+    bottom:180rpx;
+    position:fixed;
+    left:0;
+    right:0;
+    top:0;
 }
 .regvip{
     border-radius:10rpx;
@@ -78,6 +79,7 @@ top:0;
 
 .menu{
     width:100%;
+    background:#fff;
 }
 .menu-fixed{
     position:fixed;
@@ -92,13 +94,18 @@ top:0;
     width: 100%;
     white-space: nowrap;
 }
+.memnu-warp-inner{
+    height:88rpx;
+    background:#fff;
+    white-space: nowrap;
+}
 .menu-item{
     float:left;
     font-size:28rpx;
     padding:0 30rpx;
     line-height:88rpx;
     color:#444;
-    transition:.3s;
+    font-weight:800;
 }
 .menu-item-active{
     color:#FF2828
@@ -158,13 +165,14 @@ page{
 .container-scroll-px{
     bottom:184rpx;
 }
-.index-scroll-px{
-    bottom:184rpx;
-}
+
 .index-scroll{
     position:absolute;
     top:0;
     bottom:120rpx;
+}
+.index-scroll-px{
+    bottom:184rpx;
 }
 .index-scroll-top{
     top:96rpx;
