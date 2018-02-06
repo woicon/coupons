@@ -7,7 +7,7 @@ Page({
         coupon: null,
         couponStatus: ['未生效', '可使用', '已使用', '已失效', '已过期', '已删除', '已锁定'],
         couponType: ['代金券', '折扣券', '兑换券', '优惠券', '团购券', '单品代金券', '会员卡', '单品折扣'],
-        toggle: [false, true, false],
+        toggle: [false, true, false, false],
         pageloading: false,
         businessService: {
             BIZ_SERVICE_DELIVER: '外卖服务',
@@ -18,10 +18,10 @@ Page({
     },
 
     toggleTap: function (e) {
-        var that = this;
-        var _toggle = this.data.toggle;
-        var stat = _toggle[e.currentTarget.dataset.id];
-        _toggle[e.currentTarget.dataset.id] = !stat;
+        var that = this
+        var _toggle = this.data.toggle
+        var stat = _toggle[e.currentTarget.dataset.id]
+        _toggle[e.currentTarget.dataset.id] = !stat
         that.setData({
             toggle: _toggle
         });
@@ -51,6 +51,7 @@ Page({
                     coupon: _couponList
                 })
 
+                //设置首页优惠券领取状态
                 var pages = getCurrentPages()
                 var prevPage = pages[pages.length - 2]
 
@@ -139,8 +140,6 @@ Page({
         }
     },
     onHide:function(){
-        let that = this
-        app.getCoupons = true
     },
     onUnload: function () {
         

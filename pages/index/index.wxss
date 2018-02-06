@@ -100,12 +100,12 @@
     white-space: nowrap;
 }
 .menu-item{
-    float:left;
     font-size:28rpx;
     padding:0 30rpx;
     line-height:88rpx;
     color:#444;
     font-weight:800;
+    display:inline-block;
 }
 .menu-item-active{
     color:#FF2828

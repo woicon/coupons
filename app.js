@@ -107,7 +107,7 @@ App({
             merchantId: that.api.parmas.merchantId,
             unionId: sessionKey.unionid
         }
-        that.jsData('memberCardInfo', parmas).then(function (memberInfo) {
+        that.jsData('memberCardInfo', parmas).then( (memberInfo) => {
             console.log(memberInfo)
             let _curPage = that.currPage()
             that.api.parmas.memberId = memberInfo.memberId
