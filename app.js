@@ -12,7 +12,7 @@ App({
         }
         //适配iPhone X
         wx.getSystemInfo({
-            success: function (res) {
+            success: (res) => {
                 that.globalData.isPX = (res.model.indexOf("iPhone X") != -1) ? true : false
             }
         })

@@ -11,7 +11,7 @@
 <block wx:else>
     <block wx:if="{{pageloading && page === 'index'}}">
         <scroll-view 
-        class='index-scroll {{isPX?"index-scroll-px":""}} {{(banner==null)?"index-scroll-top":""}}' 
+        class='index-scroll {{isPX?"index-scroll-px":""}}' 
         scroll-y="true"
         bindscrolltolower="indexMore"
         bindscroll="indexScroll">
@@ -22,7 +22,9 @@
             indicator-dots="{{indicatorDots}}" 
             autoplay="{{autoplay}}" 
             interval="{{interval}}" 
-            duration="{{duration}}" indicator-dots="true">
+            duration="{{duration}}" 
+            indicator-active-color="#"
+            indicator-dots="true">
                 <swiper-item wx:for="{{banner}}" wx:key="banner" class="banner-item">
                     <image src="{{item}}" class="slide-image" width="100%" mode="aspectFill"/>
                 </swiper-item>
@@ -41,7 +43,7 @@
                 </scroll-view>
             </view>
             
-            <view class='coupons-list'>
+            <view class='coupons-list {{(banner==null)?"coupons-list-top":""}}'>
                 <template is="indexCoupons" data="{{couponList:couponList,couponType:couponType,receiveStatus:receiveStatus}}" />
             </view>
             

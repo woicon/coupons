@@ -3,13 +3,13 @@
     <block wx:for="{{couponList.items}}" wx:key="couponList">
         <block wx:if="{{item.couponStatus == status}}">
             <view class='coupons-card {{(status != 1)?"coupons-card-disable":""}}' 
-            bindtap="couponDescription" 
+            bindtap="couponDescription"
+            hover-class='coupons-card-hover'
             data-id="{{index}}"
             id="{{item.couponNo}}"
             data-couponsNo="{{item.couponNo}}">
                 <view class='coupons-info'>
                         <!-- couponType: ['0代金券','1折扣券','2兑换券','3优惠券','4团购券','5单品代金券','6会员卡','7单品折扣','8单品特价券','9全场满减券'], -->
-                        
                         <block wx:if="{{item.cardTemplate.type == 0}}">
                             <view class='coupons-img  coupons-red'>
                                 <view class='coupons-lines'>{{item.cardTemplate.reduceCost}}<text>元</text></view>
@@ -60,7 +60,7 @@
                     <view class='coupoons-infos'>
                         <view class='coupons-title'> {{item.cardTemplate.title}}</view>
                         <view>
-                            <view class='coupons-type'><text>{{couponType[item.cardTemplate.type]}}{{item.cardTemplate.type}}</text></view>
+                            <view class='coupons-type'><text>{{couponType[item.cardTemplate.type]}}<!--{{item.cardTemplate.type}}--></text></view>
                             <view class='coupons-subtitle'>
                                 <block wx:if="{{item.cardTemplate.type == 9}}">
                                     <view>满<text class='price'>{{item.cardTemplate.leastCost}}元</text></view>
@@ -83,6 +83,7 @@
     data-id="{{index}}"
     data-index="true"
     id="{{item.couponNo}}"
+    hover-class='coupons-card-hover'
     data-couponsNo="{{item.couponNo}}">
         <view class='coupons-info'>
                 <!-- couponType: ['0代金券','1折扣券','2兑换券','3优惠券','4团购券','5单品代金券','6会员卡','7单品折扣','8单品特价券','9全场满减券'], -->
@@ -154,6 +155,7 @@
         class='coupons-get'  
         catchtap="getCoupon"
         data-id="{{item.cardId}}"
+        hover-class='coupons-get-hover'
         data-index="{{index}}">领取</view>
         <view  class='coupons-get coupons-get-disable' wx:else><view>已领取</view></view>
     </view>

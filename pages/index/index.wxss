@@ -80,20 +80,27 @@
 .menu{
     width:100%;
     background:#fff;
+    overflow:auto;
+}
+.menu-warp{
+    height:88rpx;
+    width: 100%;
+    white-space: nowrap;
 }
 .menu-fixed{
     position:fixed;
     top:0;
     right:0;
     left:0;
-    z-index:1000;
+    height:88rpx;
+    width:100%;
+    z-index:99;
 }
 
-.menu-warp{
-    height:88rpx;
-    width: 100%;
-    white-space: nowrap;
+.coupons-list-top{
+    margin-top:110rpx;
 }
+
 .memnu-warp-inner{
     height:88rpx;
     background:#fff;

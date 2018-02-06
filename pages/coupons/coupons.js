@@ -1,4 +1,5 @@
 // pages/coupons/coupons.js
+//已作废 *********
 var app = getApp()
 var rgba = require('../../utils/common.js')
 Page({
