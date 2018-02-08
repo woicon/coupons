@@ -87,6 +87,26 @@
     width: 100%;
     white-space: nowrap;
 }
+.menu-warp-less4 .menu-item{
+  padding:0;
+  width:25%;
+  text-align:center;
+}
+.menu-warp-less3 .menu-item{
+   padding:0;
+  width:33.33333333%;
+  text-align:center;
+}
+.menu-warp-less2 .menu-item{
+   padding:0;
+  width:50%;
+  text-align:center;
+}
+.menu-warp-less1 .menu-item{
+   padding:0;
+   width:100%;
+   text-align:center;
+}
 .menu-fixed{
     position:fixed;
     top:0;
@@ -108,7 +128,7 @@
 }
 .menu-item{
     font-size:28rpx;
-    padding:0 30rpx;
+    padding:0 38rpx;
     line-height:88rpx;
     color:#444;
     font-weight:800;
@@ -140,11 +160,14 @@ page{
     left:0;top:0;
     right:0;
     z-index:99;
+    box-shadow:0 10rpx 10rpx rgba(0,0,0,.1);
+
 }
 .tabbars-item{
     width:25%;
     text-align:center;
-    padding:24rpx 0;
+    padding:0 0;
+    line-height:88rpx;
     font-size:28rpx;
     font-weight:800;
     color:#444;

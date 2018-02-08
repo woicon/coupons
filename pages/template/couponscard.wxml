@@ -137,7 +137,7 @@
             <view class='coupoons-infos'>
                 <view class='coupons-title'> {{item.title}}</view>
                 <view>
-                    <view class='coupons-type'><text>{{couponType[item.type]}}{{item.type}}</text></view>
+                    <view class='coupons-type'><text>{{couponType[item.type]}}<!--{{item.type}}--></text></view>
                     <view class='coupons-subtitle'>
                         <block wx:if="{{item.type == 9}}">
                             <view>满<text class='price'>{{item.leastCost}}元</text></view>
