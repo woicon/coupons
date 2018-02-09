@@ -1,11 +1,11 @@
 {
-    "extEnable": true,
-    "extAppid": "wx13c67157a3d0a74e",
-    "directCommit": true,
-    "ext": {
-        "merchantId":"10111174",
-        "merchantCode": "merchantCode",
-        "host": "https://opentest.liantuobank.com/api/",
-        "appId": "wx13c67157a3d0a74e"
-    }
+  "extEnable": true,
+  "extAppid": "wx13c67157a3d0a74e",
+  "directCommit": true,
+  "ext": {
+    "merchantId": "10111174",
+    "merchantCode": "EW_N5958523904",
+    "host": "https://opentest.liantuobank.com/api/",
+    "appId": "wx13c67157a3d0a74e"
+  }
 }

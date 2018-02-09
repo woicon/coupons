@@ -47,6 +47,10 @@
                 <view class="description-title">优惠说明：</view>
                 <text>凭此消费券，<block wx:if="{{coupon.leastCost != 0}}">全场消费满{{coupon.leastCost}}元，减{{coupon.reduceCost}}元，</block>不可与其他优惠共享。</text>
             </view>
+            <view wx:elif="{{coupon.type == 2 }}" class="description-text">
+                <view class="description-title">兑换礼品：</view>
+                <text>{{coupon.gift}}</text>
+            </view>
             <view class="description-text" wx:if="{{coupon.businessService != ''}}">
                 <view class="description-title">商户服务：</view>
                 <block wx:for="{{businessService}}" wx:key="businessService">
@@ -89,9 +93,9 @@
             </view>
           </view>
 
-        <block  wx:if="{{coupon.receiveCardNo || coupon.couponNo}}">
-            <view class="title {{toggle[3] ? 'open':''}}" bindtap="toggleTap" data-id="3">优惠码</view>
-            <view class="description {{!toggle[3] ? 'hide':''}}">
+       <block  wx:if="{{coupon.type==2 && (coupon.receiveCardNo || coupon.couponNo) }}">
+            <view class="title open" bindtap="toggleTap" data-id="3">兑换码</view>
+            <view class="description">
                 <view class="rqcode">
                     <view class="rqcode-img">
                         <canvas canvas-id="barcodecav" style="width:{{qrSize}}px;height:40px"/>
@@ -121,7 +125,7 @@
                       <view class="sku-name">{{item.itemName}}</view>
                       <view class="sku-text">{{item.itemText}}</view>
                   </view>
-                  <view class="sku-price price">¥{{item.itemPrice}}</view>
+                  <!-- <view class="sku-price price">¥{{item.itemPrice}}</view> -->
               </view>
         </block>
 
@@ -129,7 +133,7 @@
         
         
         <block wx:if="{{coupon.cardTextImages && coupon.cardTextImages.length != 0}}" >
-            <view class="title {{toggle[2] ? 'open':''}}" bindtap="toggleTap" data-id="2">图文详情</view>
+            <view class="title open" bindtap="toggleTap" data-id="2">图文详情</view>
             <view class="description {{!toggle[2] ? 'hide':''}}">
                 <view wx:for="{{coupon.cardTextImages}}" wx:key="cardTextImages" class='detail-img'>
                     <image src='{{item.imgUrl}}'></image>

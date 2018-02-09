@@ -6,7 +6,7 @@ Page({
     data: {
         coupon: null,
         couponStatus: ['未生效', '可使用', '已使用', '已失效', '已过期', '已删除', '已锁定'],
-        couponType: ['代金券', '折扣券', '兑换券', '优惠券', '团购券', '单品代金券', '会员卡', '单品折扣'],
+        couponType: ['全场代金券', '全场折扣券', '礼品兑换券', '优惠券', '团购券', '单品代金券', '会员卡', '单品折扣券', '单品特价券', '全场满减券'],
         toggle: [false, true, false, false],
         pageloading: false,
         businessService: {
@@ -77,6 +77,7 @@ Page({
         if (options.data){
             let coupon = JSON.parse(options.data)
             console.log(coupon)
+            console.log("解析优惠券详情", coupon)
             setDetail(coupon)
         }else{
             let parmas = {
@@ -85,6 +86,7 @@ Page({
             }
             app.jsData('couponDetail', parmas).then((res) => {
                 let coupon = res.coupon.cardTemplate
+                console.log("获取优惠券详情", coupon)
                 coupon.couponNo = res.coupon.couponNo
                 console.log(coupon)
                 setDetail(coupon)
@@ -115,7 +117,7 @@ Page({
             that.setData({
                 coupon: coupon,
                 color: coupon.color,
-                couponNo:coupon.couponNo,
+                couponNo:coupon.couponNo||'',
                 service: businessService,
                 qrSize: size.w,
                 pageloading: true

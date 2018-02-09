@@ -58,7 +58,6 @@
 .detail-img image{
     margin:0 auto;
     width:100%;
-    height:200px;
     display:block;
 }
 
@@ -93,8 +92,8 @@
     margin:0 auto;
 }
 .coupons-logo{
-    width:120rpx;
-    height:120rpx;
+    width:100rpx;
+    height:100rpx;
     margin:0 auto;
     margin-top:-90rpx;
     border-radius:920rpx;

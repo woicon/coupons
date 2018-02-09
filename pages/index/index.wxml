@@ -23,7 +23,7 @@
             autoplay="{{autoplay}}" 
             interval="{{interval}}" 
             duration="{{duration}}" 
-            indicator-active-color="#FF2828"
+            indicator-active-color="#"
             indicator-dots="true">
                 <swiper-item wx:for="{{banner}}" wx:key="banner" class="banner-item">
                     <image src="{{item}}" class="slide-image" width="100%" mode="aspectFill"/>
@@ -32,7 +32,7 @@
             </view>
             <view class="menu {{menuPos?'menu-fixed':''}}" id='menu'>
                 <scroll-view scroll-x="true" bindscroll="scroll" class='menu-warp'>
-                    <view class='memnu-warp-inner {{lessMenu?"menu-warp-less"+menuNum:""}}'>
+                    <view class='memnu-warp-inner'>
                         <view class='menu-item {{(currMenu==index)?"menu-item-active":""}}' 
                         id="{{index}}"
                         wx:for="{{categoryList}}" 
@@ -95,6 +95,7 @@
                 </view>
             </view>
         </scroll-view>
+        
     </block>
 
     <block wx:elif="{{page === 3}}">

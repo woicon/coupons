@@ -3,5 +3,11 @@
     "pages/index/index",
     "pages/couponsdetail/couponsdetail"
   ],
-  "onReachBottomDistance":60
+  "onReachBottomDistance":60,
+  "ext": {
+    "merchantId": "10111174",
+    "merchantCode": "merchantCode",
+    "host": "https://opentest.liantuobank.com/api/",
+    "appId": "wx13c67157a3d0a74e"
+  }
 }
