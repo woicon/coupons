@@ -67,7 +67,6 @@ Page({
       merchantId: app.api.parmas.merchantId
     }
     app.jsData('wechatAppCouponCategory', parmas).then((data) => {
-      console.log(data.categoryList.length)
       let lessMenu = null, menuNum = null
       if (data.categoryList.length <= 4) {
         lessMenu = true
