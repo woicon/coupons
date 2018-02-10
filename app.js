@@ -133,6 +133,10 @@ App({
     return _curPageArr[_curPageArr.length - 1]
   },
 
+  setError:function(e){
+
+  },
+  
   getData: function (url, key, parmas) {
     var that = this;
     return new Promise((resolve, reject) => {

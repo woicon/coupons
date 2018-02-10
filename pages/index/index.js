@@ -366,23 +366,23 @@ Page({
       hasMore: true
     })
   },
-  getUserInfo:function(){
+  getUserInfo: function () {
     //跳转设置页面授权
-      var that = this
-      if (wx.openSetting) {
-        wx.openSetting({
-          success: function (res) {
-            //尝试再次登录
-            app.login()
-          }
-        })
-      } else {
-        wx.showModal({
-          title: '授权提示',
-          content: '小程序需要您的微信授权才能使用哦~ 错过授权页面的处理方法：删除小程序->重新搜索进入->点击授权按钮'
-        })
-      }
-   
+    var that = this
+    if (wx.openSetting) {
+      wx.openSetting({
+        success: function (res) {
+          //尝试再次登录
+          app.login()
+        }
+      })
+    } else {
+      wx.showModal({
+        title: '授权提示',
+        content: '小程序需要您的微信授权才能使用哦~ 错过授权页面的处理方法：删除小程序->重新搜索进入->点击授权按钮'
+      })
+    }
+
   },
   //个人优惠券切换
   tabToggle: function (e) {
@@ -414,7 +414,7 @@ Page({
       resMemberCoupon: false,
     })
   },
-  
+
   onShow: function (options) {
     let that = this
     try {
@@ -430,7 +430,7 @@ Page({
     }
     if (that.data.resMemberCoupon) {
       //详情页领取优惠券后刷新用户优惠券 
-      that.memberCoupons()  
+      that.memberCoupons()
     } else {
       console.log("主页onShow，未刷新优惠券", that.data.resMemberCoupon)
     }
