@@ -33,21 +33,18 @@ Page({
         pagePath: "index",
         text: "首页",
         iconPath: "home",
-        selectedIconPath: "home-s",
         active: true
       },
       {
         pagePath: "coupons",
         text: "我的券",
         iconPath: "coup",
-        selectedIconPath: "coup-s",
         active: false
       },
       {
         link: 'viewCard',
         text: "会员卡",
         iconPath: "user",
-        selectedIconPath: "user-s",
         active: false
       }
     ],
@@ -415,7 +412,8 @@ Page({
       console.log('主页onShow错误', error)
     }
     if (that.data.resMemberCoupon) {
-      that.memberCoupons()  //刷新用户优惠券
+      //详情页领取优惠券后刷新用户优惠券 
+      that.memberCoupons()  
     } else {
       console.log("主页onShow，未刷新优惠券", that.data.resMemberCoupon)
     }

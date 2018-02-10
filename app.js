@@ -70,17 +70,33 @@ App({
                     that.api.parmas.unionId = result.unionid
                     wx.setStorageSync("sessionKey", result)
                     that.getMember(result)
-                    console.log('已经关注了公众号')
                   }
                 },
                 fail: function (failData) {
-                  let currPage = that.currPage()
-                  currPage.setData({
-                    error: true,
-                    pageloading: true,
-                    errorMessage: '您点击了拒绝授权，无法使用该小程序的功能'
-                  })
+                    let currPage = that.currPage()
+                    
+                    // 可以通过 wx.getSetting 先查询一下用户是否授权了 "scope.record" 这个 scope
+                    wx.getSetting({
+                        success(res) {
+                            console.log('RRRR',res)
+                            if (!res.authSetting['scope.userInfo']) {
+                                console.log('auto')
+                                wx.authorize({
+                                    scope: 'scope.userInfo',
+                                    success:function(e) {
+                                        console.log(e)
+                                        wx.getUserInfo()
+                                    }
+                                })
+                            }
+                        }
+                    })
 
+                    // currPage.setData({
+                    //     error: true,
+                    //     pageloading: true,
+                    //     errorMessage: '您点击了拒绝授权，无法使用该小程序的功能'
+                    // })
                 }
               })
             })

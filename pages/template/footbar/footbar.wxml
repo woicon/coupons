@@ -21,7 +21,7 @@
         hover-class="footer-hover"
         data-id="{{index}}"
         bindtap='{{item.link?item.link:"goPage"}}'>
-            <view class="icon ico-{{tabCurr == index?item.selectedIconPath:item.iconPath}}"></view>
+            <view class="icon ico-{{tabCurr == index?item.iconPath+'-s':item.iconPath}}"></view>
             {{item.text}}
         </view>
     </block>

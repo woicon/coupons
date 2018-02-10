@@ -1,6 +1,6 @@
 // pages/couponsdetail/couponsdetail.js
 const app = getApp()
-const code = require("../../utils/code.js")
+// const code = require("../../utils/code.js")
 const base = require("../../utils/util.js")
 Page({
     data: {
@@ -113,23 +113,23 @@ Page({
                 coupon.forbiddenTimes = _forbiddenTimes.split('^')
             }
 
-            let size = code.size()
+            //let size = code.size()
             that.setData({
                 coupon: coupon,
                 color: coupon.color,
                 couponNo:coupon.couponNo||'',
                 service: businessService,
-                qrSize: size.w,
+            //    qrSize: size.w,
                 pageloading: true
             })
 
-            if (coupon.receiveCardNo || coupon.couponNo ){
-                let sizes = that.data.qrSize
-                let qrcode = coupon.receiveCardNo || coupon.couponNo
-                //绘制二维码与条形码
-                code.qr(qrcode, "qrcodecav", sizes, sizes)
-                code.bar(qrcode, "barcodecav", sizes, 40)
-            }
+            // if (coupon.receiveCardNo || coupon.couponNo ){
+            //     let sizes = that.data.qrSize
+            //     let qrcode = coupon.receiveCardNo || coupon.couponNo
+            //     //绘制二维码与条形码
+            //     code.qr(qrcode, "qrcodecav", sizes, sizes)
+            //     code.bar(qrcode, "barcodecav", sizes, 40)
+            // }
 
             wx.setNavigationBarColor({
                 frontColor: '#ffffff',

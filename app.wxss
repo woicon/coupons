@@ -72,12 +72,12 @@ view, text, navigator {
 .empty .icon {
     font-size: 90rpx;
     color: #ccc;
-    margin-bottom: 30rpx;
+    margin-bottom:20rpx;
 }
 
 .empty .text {
    font-size:28rpx;
-  color:#666;
+  color:#ccc;
 }
 
 .brand {
@@ -768,7 +768,7 @@ view, text, navigator {
     padding:8rpx 24rpx;
     color:#fff;
     font-size:28rpx;
-    border-radius: 10rpx;
+    border-radius:4rpx;
     transition:.1s;
 }
 .coupons-get-hover{

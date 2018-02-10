@@ -93,7 +93,7 @@
             </view>
           </view>
 
-       <block  wx:if="{{coupon.type==2 && (coupon.receiveCardNo || coupon.couponNo) }}">
+       <!--<block  wx:if="{{coupon.type==2 && (coupon.receiveCardNo || coupon.couponNo) }}">
             <view class="title open" bindtap="toggleTap" data-id="3">兑换码</view>
             <view class="description">
                 <view class="rqcode">
@@ -109,12 +109,7 @@
                     <view class="couponno">{{coupon.notice}}</view>
                 </view>
             </view>
-        </block>
-
-        
-
-        
-
+        </block>-->
         <block wx:if="{{coupon.goodItems && coupon.goodItems.length != 0}}">
             <view class="title {{toggle[0] ? 'open':''}}" bindtap="toggleTap" data-id="0">适用优惠商品
             </view>
@@ -128,10 +123,6 @@
                   <!-- <view class="sku-price price">¥{{item.itemPrice}}</view> -->
               </view>
         </block>
-
-        
-        
-        
         <block wx:if="{{coupon.cardTextImages && coupon.cardTextImages.length != 0}}" >
             <view class="title open" bindtap="toggleTap" data-id="2">图文详情</view>
             <view class="description {{!toggle[2] ? 'hide':''}}">
