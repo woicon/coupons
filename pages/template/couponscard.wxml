@@ -98,7 +98,6 @@
     hover-class='coupons-card-hover'
     data-couponsNo="{{item.couponNo}}">
         <view class='coupons-info'>
-                <!-- couponType: ['0代金券','1折扣券','2兑换券','3优惠券','4团购券','5单品代金券','6会员卡','7单品折扣','8单品特价券','9全场满减券'], -->
                 <!-- <image src='{{item.cardTemplate.bgImg}}' mode="aspectFit"></image> -->
                 <block wx:if="{{item.type == 0}}">
                     <view class='coupons-img  coupons-red'>

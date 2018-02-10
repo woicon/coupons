@@ -3,5 +3,6 @@
     <view class="empty">
         <view class="icon {{icon}}"></view>
         <text class="text">{{text}}</text>
+        <view wx:if="{{failUserInfo}}" class='block-btn' hover-class='btn-hover' bindtap='getUserInfo'>重新授权</view>
     </view>
 </template>

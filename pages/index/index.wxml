@@ -6,7 +6,8 @@
 </view>
 <view wx:elif="{{error}}">
     <import src="../../pages/template/empty.wxml"/>
-    <template is="empty" data="{{icon:'ico-errores',text:errorMessage}}"></template>
+    <template is="empty" data="{{icon:'ico-errores',text:errorMessage,failUserInfo:failUserInfo}}"></template>
+    
 </view>
 <block wx:else>
     <block wx:if="{{pageloading && page === 'index'}}">

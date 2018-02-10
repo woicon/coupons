@@ -146,8 +146,15 @@ view, text, navigator {
     background:#11B162;
 }
 .block-btn{
-    text-align:center;display:block;background:#1CC16F;color:#fff;padding:30rpx 0;border-radius:6rpx;
-    font-size:32rpx;margin-top:20rpx;
+    text-align:center;
+    display:block;
+    background:#1CC16F;
+    width:70%;
+    color:#fff;
+    padding:22rpx 0;
+    border-radius:4rpx;
+    font-size:32rpx;
+    margin-top:40rpx;
 }
 
 .block-btn.disable {

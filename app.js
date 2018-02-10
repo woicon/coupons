@@ -58,7 +58,6 @@ App({
                       url: that.api.host + 'wechatAppUserInfo.htm',
                       data: parmas,
                       success: function (userInfo) {
-                        console.log('未关注公众号')
                         console.log(userInfo)
                         that.api.parmas.unionId = userInfo.data.result.map.unionId
                         result.unionid = userInfo.data.result.map.unionId
@@ -73,30 +72,14 @@ App({
                   }
                 },
                 fail: function (failData) {
-                    let currPage = that.currPage()
-                    
-                    // 可以通过 wx.getSetting 先查询一下用户是否授权了 "scope.record" 这个 scope
-                    wx.getSetting({
-                        success(res) {
-                            console.log('RRRR',res)
-                            if (!res.authSetting['scope.userInfo']) {
-                                console.log('auto')
-                                wx.authorize({
-                                    scope: 'scope.userInfo',
-                                    success:function(e) {
-                                        console.log(e)
-                                        wx.getUserInfo()
-                                    }
-                                })
-                            }
-                        }
-                    })
+                  let currPage = that.currPage()
+                  currPage.setData({
+                    error: true,
+                    failUserInfo: true,
+                    pageloading: true,
+                    errorMessage: '需要您授权才能使用哦！'
+                  })
 
-                    // currPage.setData({
-                    //     error: true,
-                    //     pageloading: true,
-                    //     errorMessage: '您点击了拒绝授权，无法使用该小程序的功能'
-                    // })
                 }
               })
             })
@@ -104,7 +87,6 @@ App({
               console.log(error)
             })
         } else {
-
           let currPage = that.currPage()
           currPage.setData({
             error: true,
@@ -133,6 +115,8 @@ App({
       console.log('获取用户信息参数',that.api)
       _curPage.setData({
         regStat: (memberInfo.returnCode === "S") ? true : false,
+        error: false,
+        failUserInfo: false,
       })
       wx.setStorageSync("memberCardInfo", memberInfo)
       if (that.backGetMember) {

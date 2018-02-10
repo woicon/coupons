@@ -215,7 +215,7 @@ Page({
             couponList: coupon,
             currMenu: currId,
             pageloading: true,
-            page: 'index'
+            page: 'index',
           })
         }
         if (that.data.banner != null) {
@@ -225,7 +225,7 @@ Page({
                 bannerHeight: rect.height
               })
             }).exec()
-          }.bind(this), 100)
+          }.bind(this), 300)
         } else {
           that.setData({
             menuPos: true
@@ -366,7 +366,24 @@ Page({
       hasMore: true
     })
   },
-
+  getUserInfo:function(){
+    //跳转设置页面授权
+      var that = this
+      if (wx.openSetting) {
+        wx.openSetting({
+          success: function (res) {
+            //尝试再次登录
+            app.login()
+          }
+        })
+      } else {
+        wx.showModal({
+          title: '授权提示',
+          content: '小程序需要您的微信授权才能使用哦~ 错过授权页面的处理方法：删除小程序->重新搜索进入->点击授权按钮'
+        })
+      }
+   
+  },
   //个人优惠券切换
   tabToggle: function (e) {
     let that = this
@@ -397,7 +414,7 @@ Page({
       resMemberCoupon: false,
     })
   },
-
+  
   onShow: function (options) {
     let that = this
     try {
