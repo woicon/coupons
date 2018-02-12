@@ -64,22 +64,28 @@ Page({
       merchantId: app.api.parmas.merchantId
     }
     app.jsData('wechatAppCouponCategory', parmas).then((data) => {
-      let lessMenu = null, menuNum = null
-      if (data.categoryList.length <= 4) {
-        lessMenu = true
-        menuNum = data.categoryList.length
-      }
+        console.log(data)
+        if (data.returnCode == 'S'){
+            let lessMenu = null, menuNum = null
+            if (data.categoryList.length <= 4) {
+                lessMenu = true
+                menuNum = data.categoryList.length
+            }
 
-      let setData = {
-        categoryList: data.categoryList,
-        lessMenu: lessMenu,
-        menuNum: menuNum
-      }
+            let setData = {
+                categoryList: data.categoryList,
+                lessMenu: lessMenu,
+                menuNum: menuNum
+            }
 
-      if (data.bannerList.length != 0) {
-        setData.banner = data.bannerList
-      }
-      that.setData(setData)
+            if (data.bannerList.length != 0) {
+                setData.banner = data.bannerList
+            }
+            that.setData(setData)
+        }else{
+            app.setError(data.returnMessage)
+            return
+        }
     })
       .then(function () {
         that.couponLoad({ catId: that.data.categoryList[0].categoryId })
@@ -422,6 +428,7 @@ Page({
       let sessionKey = wx.getStorageSync("sessionKey")
       if (memberInfo.returnCode === 'F') {
         app.getMember(sessionKey)
+        console.log("重新加载会员信息", sessionKey)
       }
       console.log("主页onShow，Member", memberInfo)
       console.log("主页onShow，Session", sessionKey)
@@ -431,8 +438,6 @@ Page({
     if (that.data.resMemberCoupon) {
       //详情页领取优惠券后刷新用户优惠券 
       that.memberCoupons()
-    } else {
-      console.log("主页onShow，未刷新优惠券", that.data.resMemberCoupon)
     }
   }
 })
