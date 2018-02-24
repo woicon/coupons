@@ -20,7 +20,7 @@
         class="tabbar-item {{tabCurr == index ?'active':''}}"
         hover-class="footer-hover"
         data-id="{{index}}"
-        bindtap='{{item.link?item.link:"goPage"}}'>
+        bindtap='{{(item.link || tabCurr == index)?item.link:"goPage"}}'>
             <view class="icon ico-{{tabCurr == index?item.iconPath+'-s':item.iconPath}}"></view>
             {{item.text}}
         </view>

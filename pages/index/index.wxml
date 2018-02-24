@@ -24,26 +24,27 @@
             autoplay="{{autoplay}}" 
             interval="{{interval}}" 
             duration="{{duration}}" 
-            indicator-active-color="#"
+            indicator-active-color="#FF5C3B"
             indicator-dots="true">
                 <swiper-item wx:for="{{banner}}" wx:key="banner" class="banner-item">
                     <image src="{{item}}" class="slide-image" width="100%" mode="aspectFill"/>
                 </swiper-item>
             </swiper>
             </view>
-            <view class="menu {{menuPos?'menu-fixed':''}}" id='menu'>
-                <scroll-view scroll-x="true" bindscroll="scroll" class='menu-warp'>
-                    <view class='memnu-warp-inner {{lessMenu?"menu-warp-less"+menuNum:""}}'>
-                        <view class='menu-item {{(currMenu==index)?"menu-item-active":""}}' 
-                        id="{{index}}"
-                        wx:for="{{categoryList}}" 
-                        wx:key="couponMenu" 
-                        data-id="{{item.categoryId}}" 
-                        bindtap='couponLoad'>{{item.categoryName}}</view>
-                    </view>
-                </scroll-view>
-            </view>
-            
+            <block wx:if="{{categoryList.length != 1}}">
+                <view class="menu {{menuPos?'menu-fixed':''}}" id='menu'>
+                    <scroll-view scroll-x="true" bindscroll="scroll" class='menu-warp'>
+                        <view class='memnu-warp-inner {{lessMenu?"menu-warp-less"+menuNum:""}}'>
+                            <view class='menu-item {{(currMenu==index)?"menu-item-active":""}}' 
+                            id="{{index}}"
+                            wx:for="{{categoryList}}" 
+                            wx:key="couponMenu" 
+                            data-id="{{item.categoryId}}"
+                            bindtap='{{(currMenu!=index)?"couponLoad":""}}'>{{item.categoryName}}</view>
+                        </view>
+                    </scroll-view>
+                </view>
+            </block>
             <view class='coupons-list {{(banner==null)?"coupons-list-top":""}}'>
                 <template is="indexCoupons" data="{{couponList:couponList,couponType:couponType,receiveStatus:receiveStatus}}" />
             </view>
@@ -108,9 +109,7 @@
     </block>
     <template is="indexBar" data="{{tabBar:tabBar,isPX:isPX,tabCurr:tabCurr}}"></template>
 </block>
-
 <view class="mask {{!regStat?'show':''}}"></view>
-
 <view class="regvip {{!regStat?'show':''}}" hover-class="regvip-hover" hover="true" bindtap="viewCard">
     <text>您有一张会员卡可领取</text>
     <view class="icon ico-diamond"></view>

@@ -147,33 +147,6 @@ App({
         })
     },
 
-    getData: function (url, key, parmas) {
-        var that = this;
-        return new Promise((resolve, reject) => {
-            wx.getStorage({
-                key: key,
-                success: (res) => {
-                    resolve(res.data);
-                },
-                fail: function () {
-                    wx.request({
-                        url: that.api.host + url + '.htm',
-                        data: {
-                            json: parmas,
-                        },
-                        success: function (res) {
-                            wx.setStorage({
-                                key: key,
-                                data: res.data
-                            });
-                            resolve(res.data);
-                        }
-                    });
-                }
-            })
-        })
-    },
-
     jsData: function (url, parmas) {
         let that = this
         return new Promise((data) => {
@@ -182,8 +155,12 @@ App({
                 method: 'GET',
                 success: function (res) {
                     data(res.data)
+                },
+                fail:function(error){   
+                    that.setError(error)
+                    return
                 }
-            });
+            })
         })
     },
 
@@ -211,7 +188,7 @@ App({
             let sessionKey = wx.getStorageSync("sessionKey")
             let memberCardInfo = wx.getStorageSync("memberCardInfo")
             const data = memberCardInfo
-            if (data.returnCode === 'F') {
+            if (memberCardInfo.returnCode === 'F') {
                 //获取会员卡模板信息
                 that.jsData('memberCardTemplate', { merchantId: that.api.parmas.merchantId })
                     .then(function (memberCard) {
@@ -257,4 +234,4 @@ App({
             console.log(error)
         }
     }
-});
+})
