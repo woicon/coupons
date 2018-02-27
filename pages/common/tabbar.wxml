@@ -1,2 +1,0 @@
-<import src="../../pages/template/footbar/footbar.wxml"/>
-<template is="tabbar" data="{{tabBar:tabBar,isPX:isPX}}"></template>
