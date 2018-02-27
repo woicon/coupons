@@ -1,6 +1,6 @@
 <!--index.wxml-->
 <import src="../../pages/template/couponscard.wxml"/>
-<import src="../../pages/template/footbar/footbar.wxml"/>
+<import src="../../pages/template/footbar.wxml"/>
 <view wx:if="{{!pageloading}}" class="loading">
     <loading hidden="{{pageloading}}">加载中</loading>
 </view>
