@@ -24,7 +24,23 @@
             <image src='{{coupon.coverImg}}' mode='scaleToFill'></image>
             <text>{{coupon.coverAbstract}}</text>
         </view>
-
+        <block  wx:if="{{coupon.type==2 && coupon.receiveCardNo || coupon.couponNo }}">
+            <view class="title open" bindtap="toggleTap" data-id="3">优惠券兑换码</view>
+            <view class="description">
+                <view class="rqcode">
+                    <view class="rqcode-img">
+                        <canvas canvas-id="barcodecav" style="width:{{qrSize}}px;height:40px"/>
+                    </view>
+                    <view class="couponno nos">{{coupon.receiveCardNo||coupon.couponNo}}</view>
+                </view>
+                <view class="ewm">
+                    <view class="ewm-img">
+                        <canvas bindtap="previewImg" hidden="{{canvasHidden}}" style="width:{{qrSize}}px;height:{{qrSize}}px" canvas-id="qrcodecav"/>
+                    </view>
+                    <!-- <view class="couponno">{{coupon.notice}}</view> -->
+                </view>
+            </view>
+        </block>
         <view  class="title {{toggle[1] ? 'open':''}}" bindtap="toggleTap" data-id="1">优惠券详情</view>
           <view class="description {{!toggle[1] ? 'hide':''}}">
             <view wx:if="{{coupon.type == 0 }}" class="description-text">
@@ -93,23 +109,8 @@
             </view>
           </view>
 
-       <!--<block  wx:if="{{coupon.type==2 && (coupon.receiveCardNo || coupon.couponNo) }}">
-            <view class="title open" bindtap="toggleTap" data-id="3">兑换码</view>
-            <view class="description">
-                <view class="rqcode">
-                    <view class="rqcode-img">
-                        <canvas canvas-id="barcodecav" style="width:{{qrSize}}px;height:40px"/>
-                    </view>
-                    <view class="couponno nos">{{coupon.receiveCardNo||coupon.couponNo}}</view>
-                </view>
-                <view class="ewm">
-                    <view class="ewm-img">
-                        <canvas bindtap="previewImg" hidden="{{canvasHidden}}" style="width:{{qrSize}}px;height:{{qrSize}}px" canvas-id="qrcodecav"/>
-                    </view>
-                    <view class="couponno">{{coupon.notice}}</view>
-                </view>
-            </view>
-        </block>-->
+       
+
         <block wx:if="{{coupon.goodItems && coupon.goodItems.length != 0}}">
             <view class="title {{toggle[0] ? 'open':''}}" bindtap="toggleTap" data-id="0">适用优惠商品
             </view>

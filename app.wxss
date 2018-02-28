@@ -10,6 +10,7 @@
 view, text, navigator {
     font-size: 26rpx;
     box-sizing: border-box;
+    
 }
 
 .pagescroll {
