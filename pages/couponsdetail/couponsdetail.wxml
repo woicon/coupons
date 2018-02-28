@@ -25,8 +25,8 @@
             <text>{{coupon.coverAbstract}}</text>
         </view>
         <block  wx:if="{{coupon.type==2 && coupon.receiveCardNo || coupon.couponNo }}">
-            <view class="title open" bindtap="toggleTap" data-id="3">优惠券兑换码</view>
-            <view class="description">
+            <view class="title {{toggle[3] ? 'open':''}}" bindtap="toggleTap" data-id="3">优惠券兑换码</view>
+            <view class="description {{!toggle[3] ? 'hide':''}}">
                 <view class="rqcode">
                     <view class="rqcode-img">
                         <canvas canvas-id="barcodecav" style="width:{{qrSize}}px;height:40px"/>

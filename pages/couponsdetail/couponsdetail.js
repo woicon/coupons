@@ -5,7 +5,7 @@ Page({
         coupon: null,
         couponStatus: ['未生效', '可使用', '已使用', '已失效', '已过期', '已删除', '已锁定'],
         couponType: ['全场代金券', '全场折扣券', '礼品兑换券', '优惠券', '团购券', '单品代金券', '会员卡', '单品折扣券', '单品特价券', '全场满减券'],
-        toggle: [false, true, false, false],
+        toggle: [false, true, false, true],
         pageloading: false,
         businessService: {
             BIZ_SERVICE_DELIVER: '外卖服务',
@@ -17,8 +17,9 @@ Page({
 
     toggleTap: function (e) {
         var that = this
-        var _toggle = this.data.toggle
-        var stat = _toggle[e.currentTarget.dataset.id]
+        console.log(e)
+        let _toggle = this.data.toggle
+        let stat = _toggle[e.currentTarget.dataset.id]
         _toggle[e.currentTarget.dataset.id] = !stat
         that.setData({
             toggle: _toggle
