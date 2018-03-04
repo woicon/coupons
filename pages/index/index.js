@@ -9,7 +9,8 @@ Page({
         receiveStatus: ['卡券失效', '超过总领取限制', '已领取', '已领完', '超过单日领取限制'],
         couponType: ['全场代金券', '全场折扣券', '礼品兑换券', '优惠券', '团购券', '单品代金券', '会员卡', '单品折扣券', '单品特价券', '全场满减券'],
         couponStatus: ['未生效', '可使用', '已使用', '已失效', '已过期', '已删除', '已锁定'],
-        couponTab: ['可使用', '已使用', '已失效', '已过期'],
+        //couponTab: ['可使用', '已使用', '已失效', '已过期'],
+        couponTab: ['可使用', '已使用', '未生效', '已过期'],
         errorMessage: '系统繁忙',
         banner: null,
         regStat: true,
@@ -26,9 +27,11 @@ Page({
         couponList: null,
         page: 'coupons',
         toBottom: false,
-        memberCouponMore: true,
+        memberCouponMore:true,
         hasMore: true,
         indexBottom: false,
+        memberCouponLoad:true,
+        indexCouponLoading:true,
         tabBar: [
             {
                 pagePath: "index",
@@ -50,7 +53,6 @@ Page({
             }
         ],
     },
-
     goPage: function (e) {
         let that = this
         const dataset = e.currentTarget.dataset
@@ -60,7 +62,7 @@ Page({
             })
         }
         if (dataset.url === 'coupons') {
-            that.memberCoupons()
+            that.memberCoupons({status: that.data.status})
         }
         that.setData({
             tabCurr: dataset.id,
@@ -103,47 +105,60 @@ Page({
                 that.setData(setData)
                 return data
             } else {
+                console.log(data)
                 app.setError(data.returnMessage)
                 return
             }
         })
     },
-    memberCoupons: function (currentPage) {
+    memberCoupons: function (couponsData) {
         //获取用户优惠券
         let that = this
+        let parmas = couponsData || {}
         let memberCoupons = (memberInfo) => {
             let couponsParmas = {
                 superMerchantId: app.api.parmas.merchantId,
                 memberId: memberInfo.memberId,
-                currentPage: currentPage || 1
+                currentPage: parmas.currentPage || 1,
+                status: parmas.status || that.data.status
+            }
+            if (!parmas.currentPage){
+                that.setData({
+                    memberCouponLoading:true
+                })
             }
             app.jsData('couponList', couponsParmas).then((memberCoupons) => {
-                if (currentPage) {
+                if (parmas.currentPage) {
                     let _memberCoupons = that.data.memberCouponList
                     if (memberCoupons.items.length == 0) {
-                        console.log('没有更多了')
                         that.setData({
-                            memberCouponMore: false
+                            memberMoreStat: false
                         })
                     } else {
-                        _memberCoupons.items.push(memberCoupons.items)
+                        //_memberCoupons.items.push(memberCoupons.items)
                         memberCoupons.items.forEach((item) => {
                             _memberCoupons.items.push(item)
                         })
                         _memberCoupons.currentPage = memberCoupons.currentPage
-
                         that.setData({
                             memberCouponList: _memberCoupons,
+                            memberMoreStat: true
                         })
                     }
                 } else {
                     console.log('用户已领取的优惠券',memberCoupons)
+                    let couponEmpty = (memberCoupons.items.length == 0) ? true : false
                     that.setData({
                         memberCouponList: memberCoupons,
+                        couponEmpty: couponEmpty,
+                        memberCouponBottom:false,
+                        memberCouponLoading:false,
+                        memberMoreStat:true
                     })
                 }
             })
         }
+
         try {
             let memberInfo = wx.getStorageSync("memberCardInfo")
             if (memberInfo) {
@@ -157,6 +172,7 @@ Page({
             console.log(error)
         }
     },
+
     //领取优惠券
     getCoupon: function (e) {
         var that = this
@@ -180,16 +196,21 @@ Page({
                 that.setData({
                     couponList: _couponList
                 })
-                that.memberCoupons()
+                //that.memberCoupons({})
             }
         })
     },
+
     couponLoad: function (curr) {
         let that = this
         var e = curr || {}
         if (e.currentPage) {
             that.setData({
                 indexBottom: false
+            })
+        }else{
+            that.setData({
+                    indexCouponLoading:true
             })
         }
         let couponByCategory = (memberInfo) => {
@@ -215,16 +236,17 @@ Page({
                         that.setData({
                             couponList: _couponList,
                             pageloading: true,
+                            indexCouponLoading:false 
                         })
                     }
                 } else {
-                    console.log(e)
                     that.setData({
                         couponList: coupon,
                         currMenu: e.currMenu || currId,
                         currCat: that.data.categoryList[currId].categoryId,
                         pageloading: true,
                         page: 'index',
+                        indexCouponLoading: false
                     })
                 }
                 if (that.data.banner != null) {
@@ -298,16 +320,6 @@ Page({
         app.viewCard()
     },
 
-    loadMore: function (e) {
-        let that = this
-        that.setData({
-            toBottom: true
-        })
-        let currentPage = that.data.memberCouponList.currentPage + 1
-        if (that.data.memberCouponMore) {
-            that.memberCoupons(currentPage)
-        }
-    },
     indexMore: function (e) {
         let that = this
         that.setData({
@@ -317,19 +329,24 @@ Page({
         that.setData({
             indexBottom: true
         })
+        
         if (that.data.hasMore) {
-            that.couponLoad({
-                catId: that.data.categoryList[that.data.currMenu].categoryId,
-                currentPage: currentPage
-            })
+            setTimeout(function(){
+                that.couponLoad({
+                    catId: that.data.categoryList[that.data.currMenu].categoryId,
+                    currentPage: currentPage
+                })
+            }.bind(this), 1200)
         }
     },
+
     onReachBottom: function (e) {
         let that = this
         that.setData({
             hasMore: true
         })
     },
+
     getUserInfo: function () {
         //跳转设置页面授权
         var that = this
@@ -346,32 +363,39 @@ Page({
                 content: '小程序需要您的微信授权才能使用哦~ 错过授权页面的处理方法：删除小程序->重新搜索进入->点击授权按钮'
             })
         }
-
     },
-    //个人优惠券切换
+
+    //用户优惠券Tab切换
     tabToggle: function (e) {
-        let that = this
-        let memberCouponList = that.data.memberCouponList.items
-        let status = e.target.dataset.status
-        let statusNum = []
-        let couponEmpty = null
-        memberCouponList.forEach((item) => {
-            if (item.couponStatus === status) {
-                statusNum.push(status)
-            }
-        })
-        if (statusNum.length === 0) {
-            couponEmpty = true
-        }
+        let that = this,
+        statusIndex = that.data.couponStatus.findIndex( item => item == e.target.dataset.txt)
+        setTimeout(function() {
+            that.memberCoupons({status:statusIndex})
+        }.bind(this),300)
         that.setData({
             currTab: e.target.id,
             tabPos: e.target.offsetLeft,
-            status: status,
             toBottom: false,
-            couponEmpty: couponEmpty
+            status: statusIndex,
+            memberCouponMore:true
         })
     },
 
+    //用户优惠券下拉加载更多
+    moreMemberCoupons: function (e) {
+        let that = this
+        console.log("用户优惠下拉GetMore", e)
+        that.setData({
+            memberCouponBottom: true
+        })
+        setTimeout(function(){
+            let currentPage = that.data.memberCouponList.currentPage + 1
+            if (that.data.memberMoreStat) {
+                that.memberCoupons({ currentPage: currentPage, status: that.data.status })
+            }
+        }.bind(this),1500)
+    },
+    
     onHide: function () {
         //用户优惠券状态
         this.setData({
@@ -395,7 +419,7 @@ Page({
         }
         if (that.data.resMemberCoupon) {
             //详情页领取优惠券后刷新用户优惠券 
-            that.memberCoupons()
+            that.memberCoupons({ status: that.data.status})
         }
     }
 })

@@ -97,7 +97,6 @@ App({
                         pageloading: true,
                         errorMessage: '登录失败'
                     })
-
                 }
             },
             fail: function (error) {
@@ -156,8 +155,8 @@ App({
                 success: function (res) {
                     data(res.data)
                 },
-                fail:function(error){   
-                    that.setError(error)
+                fail:function(error){
+                    that.setError("网络请求失败")
                     return
                 }
             })

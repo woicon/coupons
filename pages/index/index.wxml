@@ -1,13 +1,13 @@
 <!--index.wxml-->
 <import src="../../pages/template/couponscard.wxml"/>
 <import src="../../pages/template/footbar.wxml"/>
+<import src="../../pages/template/bottomLoading.wxml"/>
 <view wx:if="{{!pageloading}}" class="loading">
     <loading hidden="{{pageloading}}">加载中</loading>
 </view>
 <view wx:elif="{{error}}">
     <import src="../../pages/template/empty.wxml"/>
     <template is="empty" data="{{icon:'ico-errores',text:errorMessage,failUserInfo:failUserInfo}}"></template>
-    
 </view>
 <block wx:else>
     <block wx:if="{{pageloading && page === 'index'}}">
@@ -31,6 +31,7 @@
                 </swiper-item>
             </swiper>
             </view>
+           
             <block wx:if="{{categoryList.length != 1}}">
                 <view class="menu {{menuPos?'menu-fixed':''}}" id='menu'>
                     <scroll-view scroll-x="true" bindscroll="scroll" class='menu-warp'>
@@ -45,61 +46,65 @@
                     </scroll-view>
                 </view>
             </block>
-            <view class='coupons-list {{(banner==null)?"coupons-list-top":""}}'>
-                <template is="indexCoupons" data="{{couponList:couponList,couponType:couponType,receiveStatus:receiveStatus}}" />
-            </view>
             
+            
+            <view class='coupons-list {{(banner==null)?"coupons-list-top":""}}'>
+                <block wx:if="{{indexCouponLoading}}">
+                    <loading>加载中</loading>
+                </block>
+                <block wx:else>
+                    <template is="indexCoupons" data="{{couponList:couponList,couponType:couponType,receiveStatus:receiveStatus}}" />
+                </block>
+            </view>
             <view class="loadmore" wx:if="{{indexBottom}}">
-                <view wx:if="{{hasMore}}">加载中</view>
-                <view wx:else>没有更多了</view>
+                <template wx:if="{{hasMore}}" is="bottomloading" />
+                <view wx:else class='nomore'>没有更多了</view>
             </view>
         </scroll-view>
     </block>
-    
-
     <block wx:elif="{{pageloading && page === 'coupons'}}">
         <view class='tabbars'>
             <view wx:for="{{couponTab}}"
             wx:key="couponTab" 
             class="tabbars-item {{(currTab == index)?'tabbars-item-active':''}}" 
             id="{{index}}"
-            data-status="{{index+1}}"
-            bindtap='tabToggle'>{{item}}</view>
+            data-txt="{{item}}"
+            bindtap="{{(currTab == index)?'':'tabToggle'}}">{{item}}</view>
             <view class='tabbars-active' 
             style='left:{{tabPos}}px'></view>
         </view>
         <scroll-view 
         class='container-scroll {{isPX?"container-scroll-px":""}}' 
-        scroll-y="true" 
-        bindscrolltolower="loadMore"
-        bindscrolltoupper="refesh"
+        scroll-y="true"
+        bindscrolltolower="moreMemberCoupons"
+        bindscrolltoupper="refeshMemberCoupons"
         scroll-with-animation="true">
-            <block wx:if="{{memberCouponList.items.length == 0 || couponEmpty}}">
-                <import src="../../pages/template/empty.wxml"/>
-                <template is="empty" data="{{icon:'ico-coup',text:'还没有优惠券'}}"></template>
-            </block>
+            <view class='couponload' wx:if="{{memberCouponLoading}}">
+                <loading>加载中</loading>
+            </view>
             <block wx:else>
-                <view class="couponslist">
-                    <view class='coupons-list coupons-list-member'>
-                        <template is="couponscards" 
-                        data="{{couponList:memberCouponList,couponType:couponType,status:status}}">
-                        </template>
+                <block wx:if="{{couponEmpty}}">
+                    <import src="../../pages/template/empty.wxml"/>
+                    <template is="empty" data="{{icon:'ico-coup',text:'还没有优惠券'}}"></template>
+                </block>
+                <block wx:else>
+                    <view class="couponslist">
+                        <view class='coupons-list coupons-list-member'>
+                            <template is="couponscards" 
+                            data="{{couponList:memberCouponList,couponType:couponType,status:status}}">
+                            </template>
+                        </view>
                     </view>
-                </view>
+                </block>
             </block>
-
-            <view class='loadmore' wx:if="{{toBottom}}">
-                <view wx:if="{{memberCouponMore}}">
-                    <view>加载更多</view>
+            <view class='loadmore' wx:if="{{memberCouponBottom}}">
+                <view wx:if="{{memberMoreStat}}">
+                    <template is="bottomloading" />
                 </view>
-                <view wx:else>
-                    <view>没有更多了</view>
-                </view>
+                <view wx:else  class='nomore'>没有更多了</view>
             </view>
         </scroll-view>
-        
     </block>
-
     <block wx:elif="{{page === 3}}">
         <view class='empty'>
             <view class='icon-member'>

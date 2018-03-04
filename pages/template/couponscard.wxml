@@ -1,20 +1,20 @@
 <!-- couponsCard.wxml -->
+<!-- 用户优惠券列表 -->
 <template name="couponscards">
     <block wx:for="{{couponList.items}}" wx:key="couponList">
-        <block wx:if="{{item.couponStatus == status}}">
+        <!-- <block wx:if="{{item.couponStatus == status}}"> -->
             <view class='coupons-card {{(status != 1)?"coupons-card-disable":""}}' 
             bindtap="couponDescription"
             hover-class='coupons-card-hover'
             data-id="{{index}}"
             id="{{item.couponNo}}"
             data-couponsNo="{{item.couponNo}}">
-                <view class='coupons-info'> 
+                <view class='coupons-info'>
                         <block wx:if="{{item.cardTemplate.type == 0}}">
                             <view class='coupons-img  coupons-red'>
                                 <view class='coupons-lines'>{{item.cardTemplate.reduceCost}}<text>元 </text></view>
                             </view>
                         </block>
-
                         <block wx:elif="{{item.cardTemplate.type == 1}}">
                             <view class='coupons-img coupons-red'>
                                 <view class='coupons-lines'>{{item.cardTemplate.discount}}<text>折</text></view>
@@ -84,9 +84,10 @@
                     </view>
                 </view>
             </view>
-        </block>
+        <!-- </block> -->
     </block>
 </template>
+<!-- 首页优惠券列表 -->
 <template name="indexCoupons">
     <view class='coupons-card' 
     wx:for="{{couponList.items}}" 
