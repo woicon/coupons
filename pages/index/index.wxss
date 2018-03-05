@@ -5,9 +5,21 @@
     top:0;
     right:0;
     bottom:0;
-    background:rgba(0,0,0,.5);
+
     display:none;
     z-index:-10;
+   
+}
+.mask:after{
+    content: '';
+    position:absolute;
+    left:0;
+    right:0;
+    bottom:0;
+    top:0;
+    background:rgba(0,0,0,.5);
+    background: inherit;
+    filter: blur(12px);
 }
 .mask.show{
     z-index:100;

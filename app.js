@@ -8,7 +8,8 @@ App({
         that.api.host = extConfig.host
         that.api.parmas.merchantId = extConfig.merchantId
         let sessionKey = wx.getStorageSync("sessionKey")
-        !sessionKey?that.login():''
+        //!sessionKey?that.login():''
+        that.login()
         //适配iPhone X
         wx.getSystemInfo({
             success: (res) => {

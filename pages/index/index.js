@@ -22,16 +22,14 @@ Page({
         currTab: 0,
         tabPos: 0,
         status: 1,
-        hasMore: false,
         hasRefesh: false,
         couponList: null,
         page: 'coupons',
         toBottom: false,
         memberCouponMore:true,
-        hasMore: true,
+        indexCouponMore: true,
         indexBottom: false,
         memberCouponLoad:true,
-        indexCouponLoading:true,
         tabBar: [
             {
                 pagePath: "index",
@@ -135,7 +133,6 @@ Page({
                             memberMoreStat: false
                         })
                     } else {
-                        //_memberCoupons.items.push(memberCoupons.items)
                         memberCoupons.items.forEach((item) => {
                             _memberCoupons.items.push(item)
                         })
@@ -200,17 +197,18 @@ Page({
             }
         })
     },
-
+    
     couponLoad: function (curr) {
         let that = this
         var e = curr || {}
         if (e.currentPage) {
             that.setData({
-                indexBottom: false
+                indexBottom:true,
+                loadStat:false
             })
         }else{
             that.setData({
-                    indexCouponLoading:true
+                indexCouponMore:true
             })
         }
         let couponByCategory = (memberInfo) => {
@@ -221,33 +219,34 @@ Page({
             }
             app.jsData('wechatAppCouponByCategory', params).then((coupon) => {
                 console.log('获取优惠券分类', coupon)
-                let currId = (e.catId) ? "0" : e.currentTarget.id
-                if (e.currentPage) {
-                    let _couponList = that.data.couponList
-                    if (!coupon.items) {
-                        that.setData({
-                            hasMore: false
-                        })
+                if (coupon.returnCode ==  'S'){
+                    let currId = (e.catId) ? "0" : e.currentTarget.id
+                    if (e.currentPage) {
+                        let _couponList = that.data.couponList
+                        if (!coupon.items) {
+                            that.setData({
+                                indexCouponMore: false
+                            })
+                        } else {
+                            coupon.items.forEach((item) => {
+                                _couponList.items.push(item)
+                            })
+                            _couponList.currentPage = e.currentPage
+                            that.setData({
+                                couponList: _couponList,
+                                pageloading: true
+                            })
+                        }
                     } else {
-                        coupon.items.forEach((item) => {
-                            _couponList.items.push(item)
-                        })
-                        _couponList.currentPage = e.currentPage
                         that.setData({
-                            couponList: _couponList,
+                            couponList: coupon,
+                            currMenu: e.currMenu || currId,
+                            currCat: that.data.categoryList[currId].categoryId,
                             pageloading: true,
-                            indexCouponLoading:false 
+                            loadStat:true,
+                            page: 'index',
                         })
                     }
-                } else {
-                    that.setData({
-                        couponList: coupon,
-                        currMenu: e.currMenu || currId,
-                        currCat: that.data.categoryList[currId].categoryId,
-                        pageloading: true,
-                        page: 'index',
-                        indexCouponLoading: false
-                    })
                 }
                 if (that.data.banner != null) {
                     setTimeout(function () {
@@ -321,30 +320,21 @@ Page({
     },
 
     indexMore: function (e) {
-        let that = this
+        let that = this,
+        currentPage = that.data.couponList.currentPage + 1
         that.setData({
-            indexButtom: true
+            indexBottom: true,
+            loadStat:false
         })
-        let currentPage = that.data.couponList.currentPage + 1
-        that.setData({
-            indexBottom: true
-        })
-        
-        if (that.data.hasMore) {
-            setTimeout(function(){
-                that.couponLoad({
-                    catId: that.data.categoryList[that.data.currMenu].categoryId,
-                    currentPage: currentPage
-                })
-            }.bind(this), 1200)
-        }
-    },
 
-    onReachBottom: function (e) {
-        let that = this
-        that.setData({
-            hasMore: true
-        })
+        if (that.data.indexCouponMore) {
+            //setTimeout(function(){
+                    that.couponLoad({
+                        catId: that.data.categoryList[that.data.currMenu].categoryId,
+                        currentPage: currentPage
+                    })
+            //}.bind(this), 1200)
+        }
     },
 
     getUserInfo: function () {
@@ -371,7 +361,7 @@ Page({
         statusIndex = that.data.couponStatus.findIndex( item => item == e.target.dataset.txt)
         setTimeout(function() {
             that.memberCoupons({status:statusIndex})
-        }.bind(this),300)
+        }.bind(this),200)
         that.setData({
             currTab: e.target.id,
             tabPos: e.target.offsetLeft,

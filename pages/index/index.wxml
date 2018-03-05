@@ -57,7 +57,7 @@
                 </block>
             </view>
             <view class="loadmore" wx:if="{{indexBottom}}">
-                <template wx:if="{{hasMore}}" is="bottomloading" />
+                <template wx:if="{{indexCouponMore}}" is="bottomloading" />
                 <view wx:else class='nomore'>没有更多了</view>
             </view>
         </scroll-view>
