@@ -392,6 +392,7 @@ Page({
         //用户优惠券状态
         this.setData({
             resMemberCoupon: false,
+            userCoupon:false
         })
     },
 
@@ -409,9 +410,11 @@ Page({
         } catch (error) {
             console.log('主页onShow错误', error)
         }
-        if (that.data.resMemberCoupon) {
+        //if (that.data.resMemberCoupon) {
             //详情页领取优惠券后刷新用户优惠券 
             that.memberCoupons({ status: that.data.status})
-        }
+        //}
+
+        
     }
 })
