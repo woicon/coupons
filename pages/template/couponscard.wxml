@@ -3,68 +3,53 @@
 <template name="couponscards">
     <block wx:for="{{couponList.items}}" wx:key="couponList">
         <!-- <block wx:if="{{item.couponStatus == status}}"> -->
-            <view class='coupons-card {{(status != 1)?"coupons-card-disable":""}}' 
+            <view class='coupons-card {{(status != 1) ? "coupons-card-disable":""}}' 
             bindtap="couponDescription"
             hover-class='coupons-card-hover'
             data-id="{{index}}"
             id="{{item.couponNo}}"
             data-couponsNo="{{item.couponNo}}">
                 <view class='coupons-info'>
-                        <block wx:if="{{item.cardTemplate.type == 0}}">
-                            <view class='coupons-img  coupons-red'>
-                                <view class='coupons-lines'>{{item.cardTemplate.reduceCost}}<text>元 </text></view>
-                            </view>
-                        </block>
-                        <block wx:elif="{{item.cardTemplate.type == 1}}">
-                            <view class='coupons-img coupons-red'>
-                                <view class='coupons-lines'>{{item.cardTemplate.discount}}<text>折</text></view>
-                            </view>
-                        </block>
+                         <!-- <image src='{{item.cardTemplate.bgImg}}' mode="aspectFit"></image> -->
+                <block wx:if="{{!item.cardTemplate.bgImg}}">
+                    <view class='coupons-img  coupons-red' wx:if="{{item.cardTemplate.type == 0}}">
+                            <view class='coupons-lines'>{{item.cardTemplate.reduceCost}} <text>元</text></view>
+                    </view>
 
-                        <block wx:elif="{{item.cardTemplate.type == 2}}">
-                            <view class='coupons-img coupons-red'>
-                                <view class='coupons-lines ico-jifen-s'></view>
-                            </view>
-                        </block>
+                    <view class='coupons-img coupons-red' wx:elif="{{item.cardTemplate.type == 1}}">
+                            <view class='coupons-lines'>{{item.cardTemplate.discount}}<text>折</text></view>
+                    </view>
 
-                        <block wx:elif="{{item.cardTemplate.type == 3}}">
-                            <view class='coupons-img coupons-red'>
-                                <view class='coupons-lines'>{{item.cardTemplate.reduceCost}}<text>元</text></view>
-                            </view>
-                        </block>
+                    <view class='coupons-img coupons-red' wx:elif="{{item.cardTemplate.type == 2}}">
+                        <view class='coupons-lines ico-jifen-s'></view>
+                    </view>
+        
+                    <view class='coupons-img coupons-red' wx:elif="{{item.cardTemplate.type == 3}}">
+                        <view class='coupons-lines'>{{item.cardTemplate.reduceCost}}<text>元</text></view>
+                    </view>
 
-                        <block wx:elif="{{item.cardTemplate.type == 5}}">
-                            <view class='coupons-img coupons-red'>
-                                <view class='coupons-lines'>{{item.cardTemplate.reduceCost}}<text>元</text></view>
-                            </view>
-                        </block>
-                        <block wx:elif="{{item.cardTemplate.type == 7 && !item.cardTemplate.bgImg}}">
-                            <view class='coupons-img coupons-red'>
-                                <view class='coupons-lines'>{{item.cardTemplate.discount}}<text>折</text></view>
-                            </view>
-                        </block>
-                        <block wx:elif="{{item.cardTemplate.type == 7 && item.cardTemplate.bgImg}}">
-                            <view class='coupons-img coupons-red'>
-                              <image src='{{item.cardTemplate.bgImg}}' mode="scaleToFill"></image>
-                            </view>
-                        </block>
+                    <view class='coupons-img coupons-red' wx:elif="{{item.cardTemplate.type == 5}}">
+                        <view class='coupons-lines'>{{item.cardTemplate.reduceCost}}<text>元</text></view>
+                    </view> 
+          
 
-                        <block wx:elif="{{item.cardTemplate.type == 8 && !item.cardTemplate.bgImg}}">
-                            <view class='coupons-img coupons-red'>
-                                <view class='coupons-lines'>{{item.cardTemplate.specialPrice}}<text>元</text></view>
-                            </view>
-                        </block>
-                        <block wx:elif="{{item.cardTemplate.type == 8 && item.cardTemplate.bgImg}}">
-                            <view class='coupons-img'>
-                                <image src='{{item.cardTemplate.bgImg}}' mode="scaleToFill"></image>
-                            </view>
-                        </block>
+                    <view class='coupons-img coupons-red' wx:elif="{{item.cardTemplate.type == 7}}">
+                        <view class='coupons-lines'>{{item.cardTemplate.discount}}<text>折</text></view>
+                    </view>
 
-                        <block wx:elif="{{item.cardTemplate.type == 9}}">
-                            <view class='coupons-img coupons-red'>
-                                <view class='coupons-lines'>{{item.cardTemplate.reduceCost}}<text>元</text></view>
-                            </view>
-                        </block>
+                    <view class='coupons-img coupons-red' wx:elif="{{item.cardTemplate.type == 8}}">
+                        <view class='coupons-lines'>{{item.cardTemplate.specialPrice}}<text>元</text></view>
+                    </view>
+          
+                    <view  class='coupons-img coupons-red' wx:elif="{{item.cardTemplate.type == 9}}">
+                            <view class='coupons-lines'>{{item.cardTemplate.reduceCost}}<text>元</text></view>
+                    </view>    
+                </block>
+                <block wx:else>
+                    <view class='coupons-img'> 
+                        <image src='{{item.cardTemplate.bgImg}}' mode="scaleToFill"></image>
+                    </view>
+                </block>
                     
                     <view class='coupoons-infos'>
                         <view class='coupons-title'> {{item.cardTemplate.title}}</view>
@@ -82,6 +67,10 @@
                             </view>
                         </view>
                     </view>
+
+                    <block wx:if="{{status!=1}}">
+                        <view class='coupons-get coupons-get-disable'><view>{{couponTab[currTab]}}</view></view>
+                    </block>
                 </view>
             </view>
         <!-- </block> -->
@@ -100,62 +89,45 @@
     data-couponsNo="{{item.couponNo}}">
         <view class='coupons-info'>
                 <!-- <image src='{{item.cardTemplate.bgImg}}' mode="aspectFit"></image> -->
-                <block wx:if="{{item.type == 0}}">
-                    <view class='coupons-img  coupons-red'>
-                        <view class='coupons-lines'>{{item.reduceCost}} <text>元</text></view>
+                <block wx:if="{{!item.bgImg}}">
+                    <view class='coupons-img  coupons-red' wx:if="{{item.type == 0}}">
+                            <view class='coupons-lines'>{{item.reduceCost}} <text>元</text></view>
                     </view>
-                </block>
 
-                <block wx:elif="{{item.type == 1}}">
-                    <view class='coupons-img coupons-red'>
-                        <view class='coupons-lines'>{{item.discount}}<text>折</text></view>
+                    <view class='coupons-img coupons-red' wx:elif="{{item.type == 1}}">
+                            <view class='coupons-lines'>{{item.discount}}<text>折</text></view>
                     </view>
-                </block>
 
-                <block wx:elif="{{item.type == 2}}">
-                    <view class='coupons-img coupons-red'>
+                    <view class='coupons-img coupons-red' wx:elif="{{item.type == 2}}">
                         <view class='coupons-lines ico-jifen-s'></view>
                     </view>
-                </block>
-
-                <block wx:elif="{{item.type == 3}}">
-                    <view class='coupons-img coupons-red'>
+        
+                    <view class='coupons-img coupons-red' wx:elif="{{item.type == 3}}">
                         <view class='coupons-lines'>{{item.reduceCost}}<text>元</text></view>
                     </view>
-                </block>
 
-                <block wx:elif="{{item.type == 5}}">
-                    <view class='coupons-img coupons-red'>
+                    <view class='coupons-img coupons-red' wx:elif="{{item.type == 5}}">
                         <view class='coupons-lines'>{{item.reduceCost}}<text>元</text></view>
-                    </view>
-                </block>
+                    </view> 
+          
 
-                <block wx:elif="{{item.type == 7 && item.bgImg}}">
-                    <view class='coupons-img'>
-                    <image src='{{item.bgImg}}' mode="scaleToFill"></image>
-                    </view>
-                </block>
-                 <block wx:elif="{{item.type == 7 && !item.bgImg}}">
-                    <view class='coupons-img coupons-red'>
+                    <view class='coupons-img coupons-red' wx:elif="{{item.type == 7}}">
                         <view class='coupons-lines'>{{item.discount}}<text>折</text></view>
                     </view>
-                </block>
-                <block wx:elif="{{item.type == 8 && item.bgImg}}">
-                    <view class='coupons-img'> 
-                    <image src='{{item.bgImg}}' mode="scaleToFill"></image>
-                    </view>
-                </block>
-                <block wx:elif="{{item.type == 8 && !item.bgImg}}">
-                    <view class='coupons-img coupons-red'>
+
+                    <view class='coupons-img coupons-red' wx:elif="{{item.type == 8}}">
                         <view class='coupons-lines'>{{item.specialPrice}}<text>元</text></view>
                     </view>
+          
+                    <view  class='coupons-img coupons-red' wx:elif="{{item.type == 9}}">
+                            <view class='coupons-lines'>{{item.reduceCost}}<text>元</text></view>
+                    </view>    
                 </block>
-                <block wx:elif="{{item.type == 9}}">
-                    <view class='coupons-img coupons-red'>
-                        <view class='coupons-lines'>{{item.reduceCost}}<text>元</text></view>
+                <block wx:else>
+                    <view class='coupons-img'> 
+                        <image src='{{item.bgImg}}' mode="scaleToFill"></image>
                     </view>
                 </block>
-            
             <view class='coupoons-infos'>
                 <view class='coupons-title'> {{item.title}}</view>
                 <view>
@@ -172,7 +144,6 @@
                 </view>
             </view>
         </view>
-
         <view wx:if="{{item.receive}}" 
         class='coupons-get'  
         catchtap="getCoupon"

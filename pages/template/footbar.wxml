@@ -1,6 +1,6 @@
 <!-- footbar.wxml -->
 <template name="tabbar">
-  <view class="footbar {{isPX?'pxview':''}}">
+  <view class="footbar {{isPX?'pxview':''}} {{regStat?'blur':''}}">
     <block wx:for="{{tabBar}}" wx:key="pagetab">
         <navigator wx:if="{{!item.link}}" url="{{item.pagePath}}" class="tabbar-item {{item.active?'active':''}}" open-type="redirect" hover-class="footer-hover">
             <view class="icon ico-{{item.active?item.selectedIconPath:item.iconPath}}"></view>{{item.text}}
@@ -13,7 +13,7 @@
 </template>
 
 <template name="indexBar">
-  <view class="footbar {{isPX?'pxview':''}}">
+  <view class="footbar {{isPX?'pxview':''}} {{!regStat?'blur':''}}">
     <block wx:for="{{tabBar}}" wx:key="pagetab">
         <view 
         data-url="{{item.pagePath}}" 

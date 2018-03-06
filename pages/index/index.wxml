@@ -12,7 +12,7 @@
 <block wx:else>
     <block wx:if="{{pageloading && page === 'index'}}">
         <scroll-view 
-        class='index-scroll {{isPX?"index-scroll-px":""}}' 
+        class='index-scroll {{isPX?"index-scroll-px":""}} {{!regStat?"blur":""}}' 
         scroll-y="true"
         bindscrolltolower="indexMore"
         bindscroll="indexScroll">
@@ -90,9 +90,7 @@
                 <block wx:else>
                     <view class="couponslist">
                         <view class='coupons-list coupons-list-member'>
-                            <template is="couponscards" 
-                            data="{{couponList:memberCouponList,couponType:couponType,status:status}}">
-                            </template>
+                            <template is="couponscards" data="{{couponList:memberCouponList,couponType:couponType,status:status,couponTab:couponTab,currTab:currTab}}"></template>
                         </view>
                     </view>
                 </block>
@@ -112,7 +110,7 @@
             </view>
         </view>
     </block>
-    <template is="indexBar" data="{{tabBar:tabBar,isPX:isPX,tabCurr:tabCurr}}"></template>
+    <template is="indexBar" data="{{tabBar:tabBar,isPX:isPX,tabCurr:tabCurr,regStat:regStat}}"></template>
 </block>
 <view class="mask {{!regStat?'show':''}}"></view>
 <view class="regvip {{!regStat?'show':''}}" hover-class="regvip-hover" hover="true" bindtap="viewCard">
