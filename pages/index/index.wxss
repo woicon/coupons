@@ -42,7 +42,7 @@
     position:fixed;
     left:22%;
     right:22%;
-    top:30%;
+    top:34%;
     z-index:101;
     display:none;
     text-align:center;
@@ -53,7 +53,7 @@
 
 .regvip .btn{
     display:block;
-    padding: 12rpx 22rpx;
+    padding:18rpx 0;
     position:relative;
     font-size:28rpx;
 }

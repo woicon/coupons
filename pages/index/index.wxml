@@ -112,8 +112,8 @@
     </block>
     <template is="indexBar" data="{{tabBar:tabBar,isPX:isPX,tabCurr:tabCurr,regStat:regStat}}"></template>
 </block>
-<view class="mask {{!regStat?'show':''}}"></view>
-<view class="regvip {{!regStat?'show':''}}" hover-class="regvip-hover" hover="true" bindtap="viewCard">
+<view class="mask {{regStat?'show':''}}"></view>
+<view class="regvip {{regStat?'show':''}}" hover-class="regvip-hover" hover="true" bindtap="viewCard">
     <text>您有一张会员卡可领取</text>
     <view class="icon ico-diamond"></view>
     <view class="btn">立即领取</view>
