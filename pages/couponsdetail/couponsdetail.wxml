@@ -11,7 +11,7 @@
     <view class="coupon-name">{{coupon.title}}</view>
 
     <block wx:if="{{coupon.receive}}">
-        <view class='getcoupon' 
+        <view class='getcoupon'
         style='background:{{color}}' 
         data-id="{{coupon.cardId}}"
         bindtap='getCoupon'>领取优惠券</view>

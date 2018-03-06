@@ -1,5 +1,7 @@
 // pages/couponsdetail/couponsdetail.js
-const app = getApp(),code = require("../../utils/code.js"),base = require("../../utils/util.js")
+const app = getApp(),
+    code = require("../../utils/code.js"),
+    base = require("../../utils/util.js")
 Page({
     data: {
         coupon: null,
@@ -39,16 +41,25 @@ Page({
         let couponIndex = e.target.dataset.index
         app.jsData('couponGet', parmas).then((res) => {
             if (res.returnCode === 'S') {
+                console.log(res.coupons)
                 wx.showToast({
                     title: '领取成功',
                     icon: 'success',
                     duration: 2000
                 })
-                let _couponList = that.data.coupon
-                _couponList.receive = false
-                that.setData({
-                    coupon: _couponList
-                })
+                if (that.data.coupon.type == 2){
+                    const parmas = {
+                        openId: app.api.parmas.openId,
+                        couponNo: res.coupons[0].couponNo
+                    }
+                    that.getCouponDetail(parmas)
+                }else{
+                    let _couponList = that.data.coupon
+                    _couponList.receive = false
+                    that.setData({
+                        coupon: _couponList
+                    })
+                }
 
                 //设置首页优惠券领取状态
                 var pages = getCurrentPages()
@@ -56,7 +67,6 @@ Page({
 
                 let indexCouponList = prevPage.data.couponList
                 indexCouponList.items[that.data.currItems].receive = false
-
                 prevPage.setData({
                     couponList: indexCouponList,
                     resMemberCoupon:true,
@@ -64,81 +74,80 @@ Page({
             }
         })
     },
-
+    getCouponDetail: function (parmas){
+        let that = this
+        app.jsData('couponDetail', parmas).then((res) => {
+            let coupon = res.coupon.cardTemplate
+            console.log(coupon)
+            coupon.couponNo = res.coupon.couponNo
+            that.setDetail(coupon)
+        }).catch((error) => {
+            console.log(error)
+        })
+    },
     onLoad: function (options) {
         let that = this
         console.log(options)
         if (options.id){
             that.setData({
-                currItems: options.id
+                currItems: options.id,
             })
         }
         if (options.data){
             let coupon = JSON.parse(options.data)
-            console.log(coupon)
-            console.log("解析优惠券详情", coupon)
-            setDetail(coupon)
+            console.log("首页进入解析优惠券详情", coupon)
+            that.setDetail(coupon)
         }else{
             let parmas = {
                 openId: app.api.parmas.openId,
-                couponNo: options.id || "907325499011624335"
+                couponNo: options.id
             }
-            app.jsData('couponDetail', parmas).then((res) => {
-                let coupon = res.coupon.cardTemplate
-                console.log("获取优惠券详情", coupon)
-                coupon.couponNo = res.coupon.couponNo
-                console.log(coupon)
-                setDetail(coupon)
-                
-            }).catch((error) => {
-                console.log(error)
-            })
+            that.getCouponDetail(parmas)
         }
-
-        //设置详情
-        function setDetail(coupon){
-            let _businessService = coupon.businessService,
-                businessService = _businessService.split(',')
-            if (coupon.dateType == 1){
-                that.setData({
-                    endTime: base.formatTime(new Date(coupon.endTime)),
-                    beginTime: base.formatTime(new Date(coupon.beginTime)),
-                })
-            }
-
-            if (coupon.forbiddenTimes != '') {
-                let forbiddenTimes = coupon.forbiddenTimes
-                let _forbiddenTimes = forbiddenTimes.replace(/,/g, '至')
-                coupon.forbiddenTimes = _forbiddenTimes.split('^')
-            }
-
-            let size = code.size()
+    },
+    setDetail: function (coupon){
+        let that =this,
+            _businessService = coupon.businessService,
+            businessService = _businessService.split(',')
+        if (coupon.dateType == 1) {
             that.setData({
-                coupon: coupon,
-                color: coupon.color,
-                couponNo:coupon.couponNo||'',
-                service: businessService,
-                qrSize: size.w,
-                pageloading: true
-            })
-
-            if (coupon.receiveCardNo || coupon.couponNo ){
-                let sizes = that.data.qrSize
-                let qrcode = coupon.receiveCardNo || coupon.couponNo
-                //绘制二维码与条形码
-                code.qr(qrcode, "qrcodecav", sizes, sizes)
-                code.bar(qrcode, "barcodecav", sizes, 40)
-            }
-
-            wx.setNavigationBarColor({
-                frontColor: '#ffffff',
-                backgroundColor: coupon.color,
-            })
-
-            wx.setNavigationBarTitle({
-                title: coupon.title,
+                endTime: base.formatTime(new Date(coupon.endTime)),
+                beginTime: base.formatTime(new Date(coupon.beginTime)),
             })
         }
+
+        if (coupon.forbiddenTimes != '') {
+            let forbiddenTimes = coupon.forbiddenTimes
+            let _forbiddenTimes = forbiddenTimes.replace(/,/g, '至')
+            coupon.forbiddenTimes = _forbiddenTimes.split('^')
+        }
+
+        let size = code.size()
+        that.setData({
+            coupon: coupon,
+            color: coupon.color,
+            couponNo: coupon.couponNo || '',
+            service: businessService,
+            qrSize: size.w,
+            pageloading: true
+        })
+
+        if (coupon.receiveCardNo || coupon.couponNo) {
+            let sizes = that.data.qrSize
+            let qrcode = coupon.receiveCardNo || coupon.couponNo
+            //绘制二维码与条形码
+            code.qr(qrcode, "qrcodecav", sizes, sizes)
+            code.bar(qrcode, "barcodecav", sizes, 40)
+        }
+
+        wx.setNavigationBarColor({
+            frontColor: '#ffffff',
+            backgroundColor: coupon.color,
+        })
+
+        wx.setNavigationBarTitle({
+            title: coupon.title,
+        })
     },
     onHide:function(){
     },
