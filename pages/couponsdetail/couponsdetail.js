@@ -41,7 +41,7 @@ Page({
         let couponIndex = e.target.dataset.index
         app.jsData('couponGet', parmas).then((res) => {
             if (res.returnCode === 'S') {
-                console.log(res.coupons)
+                //console.log(res.coupons)
                 wx.showToast({
                     title: '领取成功',
                     icon: 'success',
@@ -150,6 +150,7 @@ Page({
         })
     },
     onHide:function(){
+        
     },
     onUnload: function () {
         
