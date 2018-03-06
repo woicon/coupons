@@ -24,8 +24,7 @@
             <image src='{{coupon.coverImg}}' mode='scaleToFill'></image>
             <text>{{coupon.coverAbstract}}</text>
         </view>
-        <block  wx:if="{{coupon.type==2}}">
- 
+        <block  wx:if="{{coupon.type == 2 && !coupon.receive}}">
             <view class="title {{toggle[3] ? 'open':''}}" bindtap="toggleTap" data-id="3">优惠券兑换码</view>
             <view class="description {{!toggle[3] ? 'hide':''}}">
                 <view class="rqcode">
