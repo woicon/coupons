@@ -201,6 +201,7 @@ Page({
     couponLoad: function (curr) {
         let that = this
         var e = curr || {}
+        console.log('分类点击',e)
         if (e.currentPage) {
             that.setData({
                 indexBottom:true,
@@ -208,7 +209,8 @@ Page({
             })
         }else{
             that.setData({
-                indexCouponMore:true
+                indexCouponMore:true,
+                indexCouponLoading:true
             })
         }
         let couponByCategory = (memberInfo) => {
@@ -243,6 +245,7 @@ Page({
                             currMenu: e.currMenu || currId,
                             currCat: that.data.categoryList[currId].categoryId,
                             pageloading: true,
+                            indexCouponLoading:false,
                             loadStat:true,
                             page: 'index',
                         })
