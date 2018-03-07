@@ -42,10 +42,15 @@ Page({
         app.jsData('couponGet', parmas).then((res) => {
             if (res.returnCode === 'S') {
                 //console.log(res.coupons)
-                wx.showToast({
+                // wx.showToast({
+                //     title: '领取成功',
+                //     icon: 'success',
+                //     duration: 2000
+                // })
+                wx.showModal({
                     title: '领取成功',
-                    icon: 'success',
-                    duration: 2000
+                    content: '微信支付即自动核销，每次支付仅限使用一张优惠券',
+                    showCancel: false
                 })
                 if (that.data.coupon.type == 2){
                     const parmas = {
@@ -150,7 +155,7 @@ Page({
         })
     },
     onHide:function(){
-        
+
     },
     onUnload: function () {
         
