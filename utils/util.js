@@ -1,5 +1,4 @@
 function formatTime(time) {
-
     var time = time.replace(/-/g, ':').replace(' ', ':'),
         time = time.split(':'),
         date = new Date(time[0], (time[1] - 1), time[2], time[3], time[4], time[5]),

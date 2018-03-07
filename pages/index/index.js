@@ -144,7 +144,7 @@ Page({
                     }
                 } else {
                     console.log('用户已领取的优惠券',memberCoupons)
-                    let couponEmpty = (memberCoupons.items.length == 0) ? true : false
+                    let couponEmpty = (memberCoupons.items && memberCoupons.items.length == 0) ? true : false
                     that.setData({
                         memberCouponList: memberCoupons,
                         couponEmpty: couponEmpty,
@@ -221,7 +221,6 @@ Page({
             }
             app.jsData('wechatAppCouponByCategory', params).then((coupon) => {
                 console.log('获取优惠券分类', coupon)
-                if (coupon.returnCode ==  'S'){
                     let currId = (e.catId) ? "0" : e.currentTarget.id
                     if (e.currentPage) {
                         let _couponList = that.data.couponList
@@ -250,20 +249,20 @@ Page({
                             page: 'index',
                         })
                     }
-                }
-                if (that.data.banner != null) {
-                    setTimeout(function () {
-                        wx.createSelectorQuery().select('#banner').boundingClientRect((rect) => {
-                            that.setData({
-                                bannerHeight: rect.height
-                            })
-                        }).exec()
-                    }.bind(this), 300)
-                } else {
-                    that.setData({
-                        menuPos: true
-                    })
-                }
+                    if (that.data.banner != null) {
+                        console.log('ss')
+                        setTimeout(function () {
+                            wx.createSelectorQuery().select('#banner').boundingClientRect((rect) => {
+                                that.setData({
+                                    bannerHeight: rect.height
+                                })
+                            }).exec()
+                        }.bind(this), 300)
+                    } else {
+                        that.setData({
+                            menuPos: true
+                        })
+                    }
             })
         }
         try {
