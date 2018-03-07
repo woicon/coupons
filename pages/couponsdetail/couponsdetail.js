@@ -66,8 +66,6 @@ Page({
                     couponNo: res.coupons[0].couponNo
                 }
                 that.getCouponDetail(parmas)
-
-
                 //设置首页优惠券领取状态
                 var pages = getCurrentPages()
                 var prevPage = pages[pages.length - 2]
@@ -89,14 +87,12 @@ Page({
                 const coupon = res.coupon.cardTemplate
                 console.log(res.coupon)
                 coupon.couponNo = res.coupon.couponNo
-
                 if (!coupon.receive) {
                     that.setData({
                         endTime: base.formatTime(new Date(res.coupon.endDate)),
                         beginTime: base.formatTime(new Date(res.coupon.getDate)),
                     })
                 }
-
                 that.setDetail(coupon)
             }
             else{
