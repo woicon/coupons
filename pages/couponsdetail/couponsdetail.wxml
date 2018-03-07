@@ -3,13 +3,10 @@
     <loading hidden="{{pageloading}}">加载中</loading>
 </block>
 <view wx:else class="coupons-detail">
-
     <view class="coupons-logo">
         <image mode="scaleToFill" src="{{coupon.logo}}"></image>
     </view>
-
     <view class="coupon-name">{{coupon.title}}</view>
-
     <block wx:if="{{coupon.receive}}">
         <view class='getcoupon'
         style='background:{{color}}' 
@@ -79,14 +76,27 @@
                 <view class="description-title">积分兑换：</view>   
                 <text>{{coupon.exchangePoint}}分</text>
             </view>
+
+
             <view class="description-text" wx:if="{{coupon.dateType == 1}}">
                 <view class="description-title">有效日期：</view>
                 <text>{{beginTime}} 至 {{endTime}}</text>
             </view>
-            <view class='description-text' wx:elif="{{coupon.dateType == 2}}">
-                <view class='description-title'>有效天数：</view>
-                <text>{{coupon.fixedTerm}}天</text>
-            </view>
+
+            <block  wx:elif="{{coupon.dateType == 2}}">
+                <block wx:if="{{!coupon.receive}}">
+                    <view class='description-text'>
+                        <view class='description-title'>有效天数：</view>
+                        <text>{{coupon.fixedTerm}}天</text>
+                    </view>
+                </block>
+                <block wx:else>
+                    <view class='description-text'>
+                        <view class='description-title'>有效日期：</view>
+                        <text>{{coupon.endTime}}</text>
+                    </view>
+                </block>
+            </block>
 
             <view class="description-text">
                 <view class="description-title">使用提醒：</view>

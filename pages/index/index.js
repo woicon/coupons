@@ -362,7 +362,6 @@ Page({
     tabToggle: function (e) {
         let that = this,
         statusIndex = that.data.couponStatus.findIndex( item => item == e.target.dataset.txt)
-        
         setTimeout(function() {
             console.log(that.data.couponStatus[statusIndex])
             that.memberCoupons({status:statusIndex})
