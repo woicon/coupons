@@ -63,7 +63,7 @@ App({
                                                     that.api.parmas.unionId = userInfo.data.result.map.unionId
                                                     result.unionid = userInfo.data.result.map.unionId
                                                     wx.setStorageSync("sessionKey", result)
-                                                    //that.getMember(result)
+                                                    that.getMember(result)
                                                 }
                                             })
                                         } else {

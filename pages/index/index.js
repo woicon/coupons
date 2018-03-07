@@ -86,7 +86,7 @@ Page({
             merchantId: app.api.parmas.merchantId
         }
         return app.jsData('wechatAppCouponCategory', parmas).then(function (data) {
-            if (data.returnCode == 'S') {
+            // if (data.returnCode == 'S') {
                 let lessMenu = null, menuNum = null
                 if (data.categoryList.length <= 4) {
                     lessMenu = true
@@ -102,11 +102,11 @@ Page({
                 }
                 that.setData(setData)
                 return data
-            } else {
-                console.log(data)
-                app.setError(data.returnMessage)
-                return
-            }
+            // } else {
+            //     console.log(data)
+            //     app.setError(data.returnMessage)
+            //     return
+            // }
         })
     },
     memberCoupons: function (couponsData) {
@@ -201,7 +201,7 @@ Page({
     couponLoad: function (curr) {
         let that = this
         var e = curr || {}
-        console.log('分类点击',e)
+        // console.log('分类点击',e)
         if (e.currentPage) {
             that.setData({
                 indexBottom:true,
