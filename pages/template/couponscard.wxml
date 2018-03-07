@@ -86,7 +86,7 @@
     data-index="true"
     id="{{item.couponNo}}"
     hover-class='coupons-card-hover'
-    data-couponsNo="{{item.couponNo}}">
+    data-no="{{item.couponNo}}">
         <view class='coupons-info'>
                 <!-- <image src='{{item.cardTemplate.bgImg}}' mode="aspectFit"></image> -->
                 <block wx:if="{{!item.bgImg}}">

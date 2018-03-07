@@ -2,7 +2,12 @@
 <block wx:if="{{!pageloading}}">
     <loading hidden="{{pageloading}}">加载中</loading>
 </block>
-<view wx:else class="coupons-detail">
+<view wx:elif="{{error}}">
+    <import src="../../pages/template/empty.wxml"/>
+    <template is="empty" data="{{icon:'ico-errores',text:errorMessage,failUserInfo:failUserInfo}}"></template>
+</view>
+<block wx:else>
+<view class="coupons-detail">
     <view class="coupons-logo">
         <image mode="scaleToFill" src="{{coupon.logo}}"></image>
     </view>
@@ -84,7 +89,7 @@
             </view>
 
             <block  wx:elif="{{coupon.dateType == 2}}">
-                <block wx:if="{{!coupon.receive}}">
+                <block wx:if="{{coupon.receive}}">
                     <view class='description-text'>
                         <view class='description-title'>有效天数：</view>
                         <text>{{coupon.fixedTerm}}天</text>
@@ -93,7 +98,7 @@
                 <block wx:else>
                     <view class='description-text'>
                         <view class='description-title'>有效日期：</view>
-                        <text>{{coupon.endTime}}</text>
+                        <text>{{endTime}}</text>
                     </view>
                 </block>
             </block>
@@ -147,3 +152,4 @@
     
 </view>
 <view class="cbg" style="background:{{color}}"></view>
+</block>

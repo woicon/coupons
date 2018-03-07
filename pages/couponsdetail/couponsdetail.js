@@ -9,6 +9,7 @@ Page({
         couponType: ['全场代金券', '全场折扣券', '礼品兑换券', '优惠券', '团购券', '单品代金券', '会员卡', '单品折扣券', '单品特价券', '全场满减券'],
         toggle: [false, true, false, true],
         pageloading: false,
+        error: false,
         businessService: {
             BIZ_SERVICE_DELIVER: '外卖服务',
             BIZ_SERVICE_FREE_PARK: '停车位',
@@ -27,7 +28,7 @@ Page({
             toggle: _toggle
         });
     },
-    
+
     //领取优惠券
     getCoupon: function (e) {
         var that = this
@@ -47,19 +48,25 @@ Page({
                     content: '微信支付即自动核销，每次支付仅限使用一张优惠券',
                     showCancel: false
                 })
-                if (that.data.coupon.type == 2){
-                    const parmas = {
-                        openId: app.api.parmas.openId,
-                        couponNo: res.coupons[0].couponNo
-                    }
-                    that.getCouponDetail(parmas)
-                }else{
-                    let _couponList = that.data.coupon
-                    _couponList.receive = false
-                    that.setData({
-                        coupon: _couponList
-                    })
+                // if (that.data.coupon.type == 2) {
+                //     const parmas = {
+                //         openId: app.api.parmas.openId,
+                //         couponNo: res.coupons[0].couponNo
+                //     }
+                //     that.getCouponDetail(parmas)
+                // } else {
+                //     let _couponList = that.data.coupon
+                //     _couponList.receive = false
+                //     that.setData({
+                //         coupon: _couponList
+                //     })
+                // }
+                const parmas = {
+                    openId: app.api.parmas.openId,
+                    couponNo: res.coupons[0].couponNo
                 }
+                that.getCouponDetail(parmas)
+
 
                 //设置首页优惠券领取状态
                 var pages = getCurrentPages()
@@ -69,18 +76,33 @@ Page({
                 indexCouponList.items[that.data.currItems].receive = false
                 prevPage.setData({
                     couponList: indexCouponList,
-                    resMemberCoupon:true,
+                    resMemberCoupon: true,
                 })
             }
         })
     },
-    getCouponDetail: function (parmas){
+    getCouponDetail: function (parmas) {
         let that = this
         app.jsData('couponDetail', parmas).then((res) => {
-            let coupon = res.coupon.cardTemplate
-            console.log(coupon)
-            coupon.couponNo = res.coupon.couponNo
-            that.setDetail(coupon)
+            if(res.returnCode == 'S'){
+                console.log(res)
+                const coupon = res.coupon.cardTemplate
+                console.log(res.coupon)
+                coupon.couponNo = res.coupon.couponNo
+
+                if (!coupon.receive) {
+                    that.setData({
+                        endTime: base.formatTime(new Date(res.coupon.endDate)),
+                        beginTime: base.formatTime(new Date(res.coupon.getDate)),
+                    })
+                }
+
+                that.setDetail(coupon)
+            }
+            else{
+                app.setError(res.returnMessage)
+                return
+            }
         }).catch((error) => {
             console.log(error)
         })
@@ -88,27 +110,34 @@ Page({
     onLoad: function (options) {
         let that = this
         console.log(options)
-        if (options.id){
+        if (options.id) {
             that.setData({
                 currItems: options.id,
             })
         }
-        if (options.data){
-            let coupon = JSON.parse(options.data)
+        let parmas = {
+            openId: app.api.parmas.openId
+        }
+        if (options.data) {
+            const coupon = JSON.parse(options.data)
             console.log("首页进入解析优惠券详情", coupon)
-            that.setDetail(coupon)
-        }else{
-            let parmas = {
-                openId: app.api.parmas.openId,
-                couponNo: options.id
+            if (!coupon.receive){
+                parmas.couponNo = coupon.receiveCardNo
+                that.getCouponDetail(parmas)
+            }else{
+                that.setDetail(coupon)
             }
+        } else {
+            parmas.couponNo = options.id
             that.getCouponDetail(parmas)
         }
     },
-    setDetail: function (coupon){
-        let that =this,
+
+    setDetail: function (coupon) {
+        let that = this,
             _businessService = coupon.businessService,
             businessService = _businessService.split(',')
+
         if (coupon.dateType == 1) {
             that.setData({
                 endTime: base.formatTime(new Date(coupon.endTime)),
@@ -149,11 +178,11 @@ Page({
             title: coupon.title,
         })
     },
-    onHide:function(){
+    onHide: function () {
 
     },
     onUnload: function () {
-        
+
     },
     onPullDownRefresh: function () {
 

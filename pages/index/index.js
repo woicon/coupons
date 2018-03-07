@@ -309,7 +309,7 @@ Page({
         if (e.currentTarget.dataset.index) {
             let data = JSON.stringify(that.data.couponList.items[e.currentTarget.dataset.id])
             wx.navigateTo({
-                url: '/pages/couponsdetail/couponsdetail?data=' + data + '&id=' + e.currentTarget.dataset.id + '&catId=' + that.data.categoryList[that.data.currMenu].categoryId
+                url: '/pages/couponsdetail/couponsdetail?data=' + data + '&id=' + e.currentTarget.dataset.id + '&catId=' + that.data.categoryList[that.data.currMenu].categoryId 
             })
         } else {
             wx.navigateTo({
