@@ -89,8 +89,8 @@ Page({
                 coupon.couponNo = res.coupon.couponNo
                 if (!coupon.receive) {
                     that.setData({
-                        endTime: base.formatTime(new Date(res.coupon.endDate)),
-                        beginTime: base.formatTime(new Date(res.coupon.getDate)),
+                        endTime: base.formatTime(res.coupon.endDate),
+                        beginTime: base.formatTime(res.coupon.getDate),
                     })
                 }
                 that.setDetail(coupon)
@@ -136,9 +136,13 @@ Page({
 
         if (coupon.dateType == 1) {
             that.setData({
-                endTime: base.formatTime(new Date(coupon.endTime)),
-                beginTime: base.formatTime(new Date(coupon.beginTime)),
+                endTime: base.formatTime(coupon.endTime),
+                beginTime: base.formatTime(coupon.beginTime),
             })
+            
+            // wx.showToast({
+            //     title: 'time：' + base.formatTime(new Date(res.coupon.getDate)),
+            // })
         }
 
         if (coupon.forbiddenTimes != '') {
