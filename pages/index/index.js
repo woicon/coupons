@@ -405,6 +405,8 @@ Page({
                 app.getMember(sessionKey).then(() => {
                     that.couponLoad({ catId: that.data.categoryList[0].categoryId })
                 })
+            }else{
+                that.couponLoad({ catId: that.data.categoryList[0].categoryId })
             }
         } catch (error) {
             console.log('主页onShow错误', error)
