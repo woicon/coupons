@@ -69,6 +69,10 @@ Page({
     },
     onLoad: function (options) {
         let that = this
+        this.resPage()
+    },
+    resPage:function(){
+        let that = this
         that.couponCategory().then((res) => {
             that.couponLoad({ catId: that.data.categoryList[0].categoryId })
         })
@@ -86,7 +90,7 @@ Page({
             merchantId: app.api.parmas.merchantId
         }
         return app.jsData('wechatAppCouponCategory', parmas).then(function (data) {
-            // if (data.returnCode == 'S') {
+             if (data.returnCode == 'S') {
                 let lessMenu = null, menuNum = null
                 if (data.categoryList.length <= 4) {
                     lessMenu = true
@@ -102,11 +106,10 @@ Page({
                 }
                 that.setData(setData)
                 return data
-            // } else {
-            //     console.log(data)
-            //     app.setError(data.returnMessage)
-            //     return
-            // }
+            } else {
+                app.setError(data.returnMessage)
+                return
+            }
         })
     },
     memberCoupons: function (couponsData) {
@@ -201,16 +204,15 @@ Page({
     couponLoad: function (curr) {
         let that = this
         var e = curr || {}
-        // console.log('分类点击',e)
         if (e.currentPage) {
             that.setData({
                 indexBottom:true,
-                loadStat:false
             })
         }else{
             that.setData({
-                indexCouponMore:true,
-                indexCouponLoading:true
+                indexCouponLoading:true,
+                indexBottom:false,
+                indexCouponMore:true
             })
         }
         let couponByCategory = (memberInfo) => {
@@ -245,12 +247,10 @@ Page({
                             currCat: that.data.categoryList[currId].categoryId,
                             pageloading: true,
                             indexCouponLoading:false,
-                            loadStat:true,
                             page: 'index',
                         })
                     }
                     if (that.data.banner != null) {
-                        console.log('ss')
                         setTimeout(function () {
                             wx.createSelectorQuery().select('#banner').boundingClientRect((rect) => {
                                 that.setData({
@@ -324,18 +324,17 @@ Page({
     indexMore: function (e) {
         let that = this,
         currentPage = that.data.couponList.currentPage + 1
+        console.log("滚动",e)
         that.setData({
             indexBottom: true,
-            loadStat:false
+            indexCouponMore: true,
         })
 
         if (that.data.indexCouponMore) {
-            //setTimeout(function(){
-                    that.couponLoad({
-                        catId: that.data.categoryList[that.data.currMenu].categoryId,
-                        currentPage: currentPage
-                    })
-            //}.bind(this), 1200)
+            that.couponLoad({
+                catId: that.data.categoryList[that.data.currMenu].categoryId,
+                currentPage: currentPage
+            })
         }
     },
 
@@ -403,11 +402,10 @@ Page({
             let memberInfo = wx.getStorageSync("memberCardInfo")
             let sessionKey = wx.getStorageSync("sessionKey")
             if (memberInfo.returnCode === 'F') {
-                app.getMember(sessionKey)
-                console.log("重新加载会员信息", sessionKey)
+                app.getMember(sessionKey).then(() => {
+                    that.couponLoad({ catId: that.data.categoryList[0].categoryId })
+                })
             }
-            console.log("主页onShow，Member", memberInfo)
-            console.log("主页onShow，Session", sessionKey)
         } catch (error) {
             console.log('主页onShow错误', error)
         }

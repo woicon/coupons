@@ -112,7 +112,7 @@ App({
             merchantId: that.api.parmas.merchantId,
             unionId: sessionKey.unionid
         }
-        that.jsData('memberCardInfo', parmas).then((memberInfo) => {
+        return that.jsData('memberCardInfo', parmas).then((memberInfo) => {
             console.log('获取会员信息', memberInfo)
             let _curPage = that.currPage()
             that.api.parmas.memberId = memberInfo.memberId
