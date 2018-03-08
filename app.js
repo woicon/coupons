@@ -8,7 +8,7 @@ App({
         that.api.host = extConfig.host
         that.api.parmas.merchantId = extConfig.merchantId
         let sessionKey = wx.getStorageSync("sessionKey")
-        !sessionKey?that.login():''
+        !sessionKey ? that.login() : ''
         //that.login()
         //适配iPhone X
         wx.getSystemInfo({
@@ -122,7 +122,9 @@ App({
                 error: false,
                 failUserInfo: false,
             })
+
             wx.setStorageSync("memberCardInfo", memberInfo)
+
             if (that.backGetMember) {
                 that.backGetMember(memberInfo)
             }
@@ -156,7 +158,7 @@ App({
                 success: function (res) {
                     data(res.data)
                 },
-                fail:function(error){
+                fail: function (error) {
                     that.setError("网络请求失败")
                     return
                 }
