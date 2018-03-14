@@ -46,7 +46,6 @@ App({
                                     withCredentials: true,
                                     lang: 'zh_CN',
                                     success: function (user) {
-                                        console.log(user);
                                         if (!result.unionid) {
                                             let parmas = {
                                                 sessionKey: result.session_key,
@@ -63,13 +62,17 @@ App({
                                                     that.api.parmas.unionId = userInfo.data.result.map.unionId
                                                     result.unionid = userInfo.data.result.map.unionId
                                                     wx.setStorageSync("sessionKey", result)
-                                                    that.getMember(result)
+                                                    if (that.backResPage){
+                                                        that.backResPage(result)
+                                                    }
                                                 }
                                             })
                                         } else {
                                             that.api.parmas.unionId = result.unionid
                                             wx.setStorageSync("sessionKey", result)
-                                            that.getMember(result)
+                                            if (that.backResPage) {
+                                                that.backResPage(result)
+                                            }
                                         }
                                     },
                                     fail: function (failData) {
@@ -105,35 +108,7 @@ App({
             }
         })
     },
-    //获取用户信息
-    getMember: function (sessionKey) {
-        let that = this
-        let parmas = {
-            merchantId: that.api.parmas.merchantId,
-            unionId: sessionKey.unionid
-        }
-        return that.jsData('memberCardInfo', parmas).then((memberInfo) => {
-            console.log('获取会员信息', memberInfo)
-            let _curPage = that.currPage()
-            that.api.parmas.memberId = memberInfo.memberId
-            console.log('获取用户信息参数', that.api)
-            _curPage.setData({
-                regStat: (memberInfo.returnCode === "S") ? true : false,
-                error: false,
-                failUserInfo: false,
-            })
-
-            wx.setStorageSync("memberCardInfo", memberInfo)
-
-            if (that.backGetMember) {
-                that.backGetMember(memberInfo)
-            }
-            if (that.backGetMemberCoupons) {
-                that.backGetMemberCoupons(memberInfo)
-            }
-        })
-    },
-
+    
     currPage: function () {
         let _curPageArr = getCurrentPages()
         return _curPageArr[_curPageArr.length - 1]
@@ -194,7 +169,7 @@ App({
                 //获取会员卡模板信息
                 that.jsData('memberCardTemplate', { merchantId: that.api.parmas.merchantId })
                     .then(function (memberCard) {
-                        console.log(memberCard)
+                        console.log("memberCardTemplate",memberCard)
                         if (sessionKey.unionid) {
                             let cardData = memberCard.wechatExtraData || {}
                             cardData.outer_str = 'unionid_' + sessionKey.unionid

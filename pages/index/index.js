@@ -51,6 +51,20 @@ Page({
             }
         ],
     },
+
+    onShareAppMessage: function (res) {
+        return {
+            title: '来领取优惠券吧！',
+            path: '/pages/index/index',
+            success: function (res) {
+                // 转发成功
+            },
+            fail: function (res) {
+                // 转发失败
+            }
+        }
+    },
+
     goPage: function (e) {
         let that = this
         const dataset = e.currentTarget.dataset
@@ -65,21 +79,6 @@ Page({
         that.setData({
             tabCurr: dataset.id,
             page: dataset.url
-        })
-    },
-    onLoad: function (options) {
-        let that = this
-        this.resPage()
-    },
-    resPage:function(){
-        let that = this
-        that.couponCategory().then((res) => {
-            that.couponLoad({ catId: that.data.categoryList[0].categoryId })
-        })
-    },
-    onReady: function () {
-        this.setData({
-            isPX: app.globalData.isPX
         })
     },
     
@@ -105,13 +104,32 @@ Page({
                     setData.banner = data.bannerList
                 }
                 that.setData(setData)
-                return data
+                
             } else {
                 app.setError(data.returnMessage)
                 return
             }
         })
     },
+
+    //获取用户信息
+    getMember: function (sessionKey) {
+        let that = this
+        let parmas = {
+            merchantId: app.api.parmas.merchantId,
+            unionId: sessionKey.unionid
+        }
+        return app.jsData('memberCardInfo', parmas).then((memberInfo) => {
+            app.api.parmas.memberId = memberInfo.memberId
+            that.setData({
+                regStat: (memberInfo.returnCode === "S") ? true : false,
+                error: false,
+                failUserInfo: false,
+            })
+            wx.setStorageSync("memberCardInfo", memberInfo)
+        })
+    },
+
     memberCoupons: function (couponsData) {
         //获取用户优惠券
         let that = this
@@ -146,7 +164,6 @@ Page({
                         })
                     }
                 } else {
-                    console.log('用户已领取的优惠券',memberCoupons)
                     let couponEmpty = (memberCoupons.items && memberCoupons.items.length == 0) ? true : false
                     that.setData({
                         memberCouponList: memberCoupons,
@@ -193,6 +210,7 @@ Page({
                 })
                 let _couponList = that.data.couponList
                 _couponList.items[couponIndex].receive = false
+                _couponList.items[couponIndex].couponNo = res.coupons[0].couponNo
                 that.setData({
                     couponList: _couponList
                 })
@@ -222,7 +240,6 @@ Page({
                 currentPage: e.currentPage || 1
             }
             app.jsData('wechatAppCouponByCategory', params).then((coupon) => {
-                console.log('获取优惠券分类', coupon)
                     let currId = (e.catId) ? "0" : e.currentTarget.id
                     if (e.currentPage) {
                         let _couponList = that.data.couponList
@@ -247,7 +264,7 @@ Page({
                             currCat: that.data.categoryList[currId].categoryId,
                             pageloading: true,
                             indexCouponLoading:false,
-                            page: 'index',
+                            page: e.page || 'index',
                         })
                     }
                     if (that.data.banner != null) {
@@ -270,7 +287,7 @@ Page({
             if (memberInfo) {
                 couponByCategory(memberInfo)
             } else {
-                app.backGetMember = (memberInfo) => {
+                app.backCouponByCategory = (memberInfo) => {
                     couponByCategory(memberInfo)
                 }
             }
@@ -278,6 +295,8 @@ Page({
             console.log(error)
         }
     },
+
+
 
     indexScroll: function (e) {
         let that = this
@@ -297,7 +316,6 @@ Page({
     //查看优惠券详情
     couponDescription: function (e) {
         let that = this
-        console.log(e)
         let touchTime = that.data.touchEnd - that.data.touchStart
         let couponNo = e.currentTarget.id
         let parmas = {
@@ -324,7 +342,6 @@ Page({
     indexMore: function (e) {
         let that = this,
         currentPage = that.data.couponList.currentPage + 1
-        console.log("滚动",e)
         that.setData({
             indexBottom: true,
             indexCouponMore: true,
@@ -361,7 +378,6 @@ Page({
         let that = this,
         statusIndex = that.data.couponStatus.findIndex( item => item == e.target.dataset.txt)
         setTimeout(function() {
-            console.log(that.data.couponStatus[statusIndex])
             that.memberCoupons({status:statusIndex})
         }.bind(this),200)
         that.setData({
@@ -376,7 +392,6 @@ Page({
     //用户优惠券下拉加载更多
     moreMemberCoupons: function (e) {
         let that = this
-        console.log("用户优惠下拉GetMore", e)
         that.setData({
             memberCouponBottom: true
         })
@@ -396,26 +411,53 @@ Page({
         })
     },
 
-    onShow: function (options) {
+    resPage: function (sessionKey) {
         let that = this
+        that.getMember(sessionKey)
+        .then((res)=>{
+            that.couponCategory()
+            .then(()=>{
+                that.couponLoad({ catId: that.data.categoryList[0].categoryId })
+            })
+        })
+    },
+    
+    onLoad: function (options) {
+        let that = this
+
         try {
             let memberInfo = wx.getStorageSync("memberCardInfo")
             let sessionKey = wx.getStorageSync("sessionKey")
-            if (memberInfo.returnCode === 'F') {
-                app.getMember(sessionKey).then(() => {
-                    that.couponLoad({ catId: that.data.categoryList[0].categoryId })
-                })
-            }else{
-                that.couponLoad({ catId: that.data.categoryList[0].categoryId })
+            if (memberInfo.returnCode == 'F') {
+
             }
+            if (sessionKey) {
+                that.resPage(sessionKey)
+            } else {
+                app.backResPage = (sessionKey) => {
+                    that.resPage(sessionKey)
+                }
+            }
+        } catch (error) {
+            console.log('not success loading', error)
+        }
+
+        this.setData({
+            isPX: app.globalData.isPX
+        })
+
+    },
+
+    onShow: function (options) {
+        let that = this
+        try {
+            let sessionKey = wx.getStorageSync("sessionKey")
+            that.getMember(sessionKey).then(() => {
+                that.couponLoad({ catId: that.data.currCat, page: that.data.page, currMenu: that.data.currMenu })
+            })
+            that.memberCoupons({ status: that.data.status })
         } catch (error) {
             console.log('主页onShow错误', error)
         }
-        //if (that.data.resMemberCoupon) {
-            //详情页领取优惠券后刷新用户优惠券 
-            that.memberCoupons({ status: that.data.status})
-        //}
-
-        
     }
 })

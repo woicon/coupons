@@ -118,7 +118,7 @@ Page({
             const coupon = JSON.parse(options.data)
             console.log("首页进入解析优惠券详情", coupon)
             if (!coupon.receive){
-                parmas.couponNo = coupon.receiveCardNo
+                parmas.couponNo = coupon.receiveCardNo || coupon.couponNo
                 that.getCouponDetail(parmas)
             }else{
                 that.setDetail(coupon)
