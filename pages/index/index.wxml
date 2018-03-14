@@ -50,7 +50,10 @@
             
             <view class='coupons-list {{(banner==null)?"coupons-list-top":""}}'>
                 <block wx:if="{{indexCouponLoading}}">
-                    <loading>加载中</loading>
+                    <!-- <loading>加载中</loading> -->
+                    <view class='viewloading'>
+                        <template is="bottomloading" />
+                    </view>
                 </block>
                 <block wx:else>
                     <template is="indexCoupons" data="{{couponList:couponList,couponType:couponType,receiveStatus:receiveStatus}}" />
@@ -80,7 +83,10 @@
         bindscrolltoupper="refeshMemberCoupons"
         scroll-with-animation="true">
             <view class='couponload' wx:if="{{memberCouponLoading}}">
-                <loading>加载中</loading>
+                <!-- <loading>加载中</loading> -->
+                <view class='viewloading'>
+                    <template is="bottomloading" />
+                </view>
             </view>
             <block wx:else>
                 <block wx:if="{{couponEmpty}}">
