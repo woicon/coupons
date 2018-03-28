@@ -16,6 +16,7 @@
         <view class='getcoupon'
         style='background:{{color}}' 
         data-id="{{coupon.cardId}}"
+        data-cardId="{{coupon.wechatCardId}}"
         bindtap='getCoupon'>领取优惠券</view>
     </block>
     

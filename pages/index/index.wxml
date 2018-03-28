@@ -38,10 +38,10 @@
                         <view class='memnu-warp-inner {{lessMenu?"menu-warp-less"+menuNum:""}}'>
                             <view class='menu-item {{(currMenu==index)?"menu-item-active":""}}' 
                             id="{{index}}"
-                            wx:for="{{categoryList}}" 
-                            wx:key="couponMenu" 
+                            wx:for="{{categoryList}}"
+                            wx:key="couponMenu"
                             data-id="{{item.categoryId}}"
-                            bindtap='{{(currMenu!=index)?"couponLoad":""}}'>{{item.categoryName}}</view>
+                            bindtap='{{(currMenu!=index)?"catToggle":""}}'>{{item.categoryName}}</view>
                         </view>
                     </scroll-view>
                 </view>

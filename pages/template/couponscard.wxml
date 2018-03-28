@@ -148,6 +148,9 @@
         class='coupons-get'  
         catchtap="getCoupon"
         data-id="{{item.cardId}}"
+        data-cardId="{{item.wechatCardId}}"
+        data-merchantId="{{item.merchantId}}"
+  
         hover-class='coupons-get-hover'
         data-index="{{index}}">领取</view>
         <view  class='coupons-get coupons-get-disable' wx:else><view>已领取</view></view>

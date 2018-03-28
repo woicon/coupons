@@ -35,54 +35,83 @@ Page({
         let memberInfo = wx.getStorageSync("memberCardInfo")
         var parmas = {
             cardIds: e.target.dataset.id,
-            openId: app.api.parmas.openId,
-            merchantId: app.api.parmas.merchantId,
+            openId: app.api.openId,
+            merchantId: app.api.merchantId,
             memberId: memberInfo.memberId
         }
         let couponIndex = e.target.dataset.index
+        console.log(e)
+
+        let syncParmas = {
+            cardId: e.target.dataset.cardid,
+            merchantId: app.api.merchantId
+        }
+
+        let detailParmas = {
+            unionId: wx.getStorageInfoSync("sessionKey").unionid
+        }
+
         app.jsData('couponGet', parmas).then((res) => {
-            if (res.returnCode === 'S') {
-                //console.log(res.coupons)
+            if (memberInfo.memberId) {
                 wx.showModal({
                     title: '领取成功',
                     content: '微信支付即自动核销，每次支付仅限使用一张优惠券',
                     showCancel: false
                 })
-                // if (that.data.coupon.type == 2) {
-                //     const parmas = {
-                //         openId: app.api.parmas.openId,
-                //         couponNo: res.coupons[0].couponNo
-                //     }
-                //     that.getCouponDetail(parmas)
-                // } else {
-                //     let _couponList = that.data.coupon
-                //     _couponList.receive = false
-                //     that.setData({
-                //         coupon: _couponList
-                //     })
-                // }
-                const parmas = {
-                    openId: app.api.parmas.openId,
-                    couponNo: res.coupons[0].couponNo
-                }
-                that.getCouponDetail(parmas)
-                //设置首页优惠券领取状态
-                var pages = getCurrentPages()
-                var prevPage = pages[pages.length - 2]
-
-                let indexCouponList = prevPage.data.couponList
-                indexCouponList.items[that.data.currItems].receive = false
-                prevPage.setData({
-                    couponList: indexCouponList,
-                    resMemberCoupon: true,
+                const couponNo = res.coupons[0].couponNo
+                syncParmas.cardNo = couponNo
+                detailParmas.couponNo = couponNo
+                app.syncCopuonToWechat(syncParmas)
+                that.getCouponDetail(detailParmas)
+            }else{
+                //不是会员的用户领取优惠券
+                wx.showLoading({
+                    title: '加载中',
+                })
+                app.request("couponNo").then((res) => {
+                    const couponNo = res.data.couponNo
+                    console.log(couponNo)
+                    syncParmas.cardNo = couponNo
+                    detailParmas.couponNo = couponNo
+                    app.syncCopuonToWechat(syncParmas,function(){
+                        that.getCouponDetail(detailParmas)
+                    })
+                    
                 })
             }
+           
         })
+    },
+    
+    onLoad: function (options) {
+        let that = this
+        console.log(options)
+        if (options.id) {
+            that.setData({
+                currItems: options.id,
+            })
+        }
+        let parmas = {
+            unionId: wx.getStorageSync("sessionKey").unionid
+        }
+
+        if (options.data) {
+            const coupon = JSON.parse(options.data)
+            if (!coupon.receive){
+                parmas.couponNo = coupon.receiveCardNo || coupon.couponNo
+                that.getCouponDetail(parmas)
+            }else{
+                that.setDetail(coupon)
+            }
+        } else {
+            parmas.couponNo = options.id
+            that.getCouponDetail(parmas)
+        }
     },
     getCouponDetail: function (parmas) {
         let that = this
         app.jsData('couponDetail', parmas).then((res) => {
-            if(res.returnCode == 'S'){
+            if (res.returnCode == 'S') {
                 console.log(res)
                 const coupon = res.coupon.cardTemplate
                 console.log(res.coupon)
@@ -95,7 +124,7 @@ Page({
                 }
                 that.setDetail(coupon)
             }
-            else{
+            else {
                 app.setError(res.returnMessage)
                 return
             }
@@ -103,32 +132,6 @@ Page({
             console.log(error)
         })
     },
-    onLoad: function (options) {
-        let that = this
-        console.log(options)
-        if (options.id) {
-            that.setData({
-                currItems: options.id,
-            })
-        }
-        let parmas = {
-            openId: app.api.parmas.openId
-        }
-        if (options.data) {
-            const coupon = JSON.parse(options.data)
-            console.log("首页进入解析优惠券详情", coupon)
-            if (!coupon.receive){
-                parmas.couponNo = coupon.receiveCardNo || coupon.couponNo
-                that.getCouponDetail(parmas)
-            }else{
-                that.setDetail(coupon)
-            }
-        } else {
-            parmas.couponNo = options.id
-            that.getCouponDetail(parmas)
-        }
-    },
-
     setDetail: function (coupon) {
         let that = this,
             _businessService = coupon.businessService,
@@ -139,10 +142,6 @@ Page({
                 endTime: base.formatTime(coupon.endTime),
                 beginTime: base.formatTime(coupon.beginTime),
             })
-            
-            // wx.showToast({
-            //     title: 'time：' + base.formatTime(new Date(res.coupon.getDate)),
-            // })
         }
 
         if (coupon.forbiddenTimes != '') {
@@ -177,20 +176,6 @@ Page({
         wx.setNavigationBarTitle({
             title: coupon.title,
         })
-    },
-    onHide: function () {
-
-    },
-    onUnload: function () {
-
-    },
-    onPullDownRefresh: function () {
-
-    },
-    onReachBottom: function () {
-
-    },
-    onShareAppMessage: function () {
-
+        wx.hideLoading()
     }
 })
