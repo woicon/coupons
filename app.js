@@ -174,10 +174,17 @@ App({
                 wx.addCard({
                     cardList: [result],
                     success: function (res) {
-                        wx.showLoading()
-                        setTimeout(function(){
-                            callback()
-                        }.bind(this),1000)
+                        
+                        if (callback){
+                            wx.showLoading()
+                            setTimeout(function(){
+                                callback()
+                                
+                            }.bind(this),1000)
+                        }
+                        wx.showToast({
+                            title: '已添加到微信卡包',
+                        })
                     }
                 });
             } else {
