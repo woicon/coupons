@@ -100,6 +100,7 @@ Page({
                     lessMenu: lessMenu,
                     menuNum: menuNum,
                     catId: catdata.categoryList[0].categoryId,
+                    userLimit: catdata.userLimit,
                     regStat: (that.data.isMember || catdata.userLimit === 0) ? true : false
                 }
                 

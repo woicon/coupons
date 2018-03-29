@@ -286,7 +286,16 @@ App({
                             //         }
                             //     }
                             // })
-                            that.setError("商家未创建会员卡")
+                            
+                            if (currPage.data.userLimit === 0){
+                                wx.showModal({
+                                    title: '提示',
+                                    content: '商家未创建会员卡,该功能不可用',
+                                    showCancel:false
+                                })
+                            }else{
+                                that.setError("商家未创建会员卡")
+                            }
                         }
                     }
                 })
