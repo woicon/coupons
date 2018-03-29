@@ -162,8 +162,7 @@ App({
     },
     //同步优惠券到卡包
     syncCopuonToWechat: function (parmas,callback) {
-        //console.log(app.api)
-        //let that = this
+        let that = this
         this.request("wechatJsTicket", parmas).then((data) => {
             wx.hideLoading()
             let result = data.data.result[0]
@@ -174,17 +173,23 @@ App({
                 wx.addCard({
                     cardList: [result],
                     success: function (res) {
-                        
-                        if (callback){
+
+                        if (callbacks){
                             wx.showLoading()
                             setTimeout(function(){
-                                callback()
-                                
+                                callbacks()
+                                console.log("同步到微信卡包成功++++>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>")
+                                wx.showLoading()
+                                wx.showModal({
+                                    title: '领取成功',
+                                    content: '微信支付即自动核销，每次支付仅限使用一张优惠券',
+                                    showCancel: false
+                                })
                             }.bind(this),1000)
                         }
-                        wx.showToast({
-                            title: '已添加到微信卡包',
-                        })
+                    },
+                    fail:function(error){
+                        console.log(error)
                     }
                 });
             } else {
@@ -198,7 +203,7 @@ App({
     //领取优惠券
     getCoupon: function (e) {
         var that = this
-        let currPage = that.currPage()
+        
         var parmas = {
             cardIds: e.target.dataset.id,
             openId: that.api.openId,
@@ -206,41 +211,66 @@ App({
             memberId: wx.getStorageSync("memberCardInfo").memberId
         }
         let couponIndex = e.target.dataset.index
-        if (currPage.data.isMember) {
-            that.jsData('couponGet', parmas).then((res) => {
-                if (res.returnCode === 'S') {
-                    wx.showModal({
-                        title: '领取成功',
-                        content: '微信支付即自动核销，每次支付仅限使用一张优惠券',
-                        showCancel: false
-                    })
+        // if (currPage.data.isMember) {
+        //     that.jsData('couponGet', parmas).then((res) => {
+        //         if (res.returnCode === 'S') {
+        //             wx.showModal({
+        //                 title: '领取成功',
+        //                 content: '微信支付即自动核销，每次支付仅限使用一张优惠券',
+        //                 showCancel: false
+        //             })
 
-                    let _couponList = currPage.data.couponList
-                    _couponList.items[couponIndex].receive = false
-                    _couponList.items[couponIndex].couponNo = res.coupons[0].couponNo
-                    currPage.setData({
-                        couponList: _couponList
-                    })
-                    let _parmas = {
-                        cardNo: res.coupons[0].couponNo,
-                        cardId: e.target.dataset.cardid,
-                        merchantId: that.api.merchantId
-                    }
-                    that.syncCopuonToWechat(_parmas)
-                }
-            })
-        } else {
-            //不是会员的用户领取优惠券
-            wx.showLoading()
-            that.request("couponNo").then((res) => {
-                let parmas = {
-                    cardNo: res.data.couponNo,
-                    cardId: e.target.dataset.cardid,
-                    merchantId: that.api.merchantId
-                }
-                that.syncCopuonToWechat(parmas)
-            })
-        }
+        //             let _couponList = currPage.data.couponList
+        //             _couponList.items[couponIndex].receive = false
+        //             _couponList.items[couponIndex].couponNo = res.coupons[0].couponNo
+        //             currPage.setData({
+        //                 couponList: _couponList
+        //             })
+        //             let _parmas = {
+        //                 cardNo: res.coupons[0].couponNo,
+        //                 cardId: e.target.dataset.cardid,
+        //                 merchantId: that.api.merchantId
+        //             }
+        //             that.syncCopuonToWechat(_parmas)
+        //         }
+        //     })
+        // } else {
+        //     //不是会员的用户领取优惠券
+        //     wx.showLoading()
+        //     that.request("couponNo").then((res) => {
+        //         let parmas = {
+        //             cardNo: res.data.couponNo,
+        //             cardId: e.target.dataset.cardid,
+        //             merchantId: that.api.merchantId
+        //         }
+        //         that.syncCopuonToWechat(parmas)
+        //     })
+        // }
+
+        //不是会员的用户领取优惠券
+        wx.showLoading()
+        that.request("couponNo").then((res) => {
+            let couponNo = res.data.couponNo
+            let parmas = {
+                cardNo: couponNo,
+                cardId: e.target.dataset.cardid,
+                merchantId: that.api.merchantId
+            }
+            that.syncCopuonToWechat(parmas,setStat)
+
+            function setStat(){
+                let currPage = that.currPage()
+                let _couponList = currPage.data.couponList
+                _couponList.items[couponIndex].receive = false
+                _couponList.items[couponIndex].couponNo = couponNo
+                console.log("修改状态》》》》》》》》》》》",_couponList)
+                
+                currPage.setData({
+                    couponList: _couponList
+                })
+            }
+
+        })
     },
     regCard: function (data){
         let cardData = data || {}

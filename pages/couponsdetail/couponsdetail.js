@@ -50,37 +50,52 @@ Page({
         let detailParmas = {
             unionId: wx.getStorageInfoSync("sessionKey").unionid
         }
-
-        app.jsData('couponGet', parmas).then((res) => {
-            if (memberInfo.memberId) {
-                wx.showModal({
-                    title: '领取成功',
-                    content: '微信支付即自动核销，每次支付仅限使用一张优惠券',
-                    showCancel: false
-                })
-                const couponNo = res.coupons[0].couponNo
-                syncParmas.cardNo = couponNo
-                detailParmas.couponNo = couponNo
-                app.syncCopuonToWechat(syncParmas)
+        wx.showLoading()
+        app.request("couponNo").then((res) => {
+            const couponNo = res.data.couponNo
+            console.log(couponNo)
+            syncParmas.cardNo = couponNo
+            detailParmas.couponNo = couponNo
+            app.syncCopuonToWechat(syncParmas, resDetail)
+            function resDetail() {
                 that.getCouponDetail(detailParmas)
-            }else{
-                //不是会员的用户领取优惠券
-                wx.showLoading({
-                    title: '加载中',
-                })
-                app.request("couponNo").then((res) => {
-                    const couponNo = res.data.couponNo
-                    console.log(couponNo)
-                    syncParmas.cardNo = couponNo
-                    detailParmas.couponNo = couponNo
-                    app.syncCopuonToWechat(syncParmas,function(){
-                        that.getCouponDetail(detailParmas)
-                    })
-                    
-                })
             }
-           
         })
+        // app.jsData('couponGet', parmas).then((res) => {
+        //     if (memberInfo.memberId) {
+        //         wx.showModal({
+        //             title: '领取成功',
+        //             content: '微信支付即自动核销，每次支付仅限使用一张优惠券',
+        //             showCancel: false
+        //         })
+        //         const couponNo = res.coupons[0].couponNo
+        //         syncParmas.cardNo = couponNo
+        //         detailParmas.couponNo = couponNo
+        //         app.syncCopuonToWechat(syncParmas)
+        //         that.getCouponDetail(detailParmas)
+        //     }else{
+        //         //不是会员的用户领取优惠券
+        //         wx.showLoading({
+        //             title: '加载中',
+        //         })
+        //         app.request("couponNo").then((res) => {
+        //             const couponNo = res.data.couponNo
+        //             console.log(couponNo)
+        //             syncParmas.cardNo = couponNo
+        //             detailParmas.couponNo = couponNo
+        //             app.syncCopuonToWechat(syncParmas,function(){
+        //                 wx.showModal({
+        //                     title: '领取成功',
+        //                     content: '微信支付即自动核销，每次支付仅限使用一张优惠券',
+        //                     showCancel: false
+        //                 })
+        //                 that.getCouponDetail(detailParmas)
+        //             })
+                    
+        //         })
+        //     }
+           
+        // })
     },
     
     onLoad: function (options) {
