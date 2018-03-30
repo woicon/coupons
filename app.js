@@ -173,7 +173,6 @@ App({
                 wx.addCard({
                     cardList: [result],
                     success: function (res) {
-
                         if (callbacks){
                             wx.showLoading()
                             setTimeout(function(){

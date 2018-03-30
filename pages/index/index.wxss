@@ -212,7 +212,7 @@ page{
     position:absolute;
     bottom:0;
     background-color:#FF2828;
-    transition:.5s ease-in;
+    transition:.14s ease;
 }
 
 .container-scroll{

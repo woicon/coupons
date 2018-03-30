@@ -58,7 +58,9 @@ Page({
             detailParmas.couponNo = couponNo
             app.syncCopuonToWechat(syncParmas, resDetail)
             function resDetail() {
-                that.getCouponDetail(detailParmas)
+                setTimeout(function(){
+                    that.getCouponDetail(detailParmas)
+                }.bind(this),300)
             }
         })
         // app.jsData('couponGet', parmas).then((res) => {
@@ -94,7 +96,6 @@ Page({
                     
         //         })
         //     }
-           
         // })
     },
     
