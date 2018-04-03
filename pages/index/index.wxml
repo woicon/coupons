@@ -56,7 +56,7 @@
                     </view>
                 </block>
                 <block wx:else>
-                    <template is="indexCoupons" data="{{couponList:couponList,couponType:couponType,receiveStatus:receiveStatus}}" />
+                    <template is="indexCoupons" data="{{couponList:couponList,couponType:couponType,receiveStatus:receiveStatus,lockGet:lockGet}}" />
                 </block>
             </view>
             <view class="loadmore" wx:if="{{indexBottom}}">

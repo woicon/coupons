@@ -163,6 +163,10 @@ App({
     //同步优惠券到卡包
     syncCopuonToWechat: function (parmas,callback) {
         let that = this
+        const currPage = that.currPage()
+        currPage.setData({
+            lockGet:true
+        })
         this.request("wechatJsTicket", parmas).then((data) => {
             wx.hideLoading()
             let result = data.data.result[0]
@@ -173,12 +177,12 @@ App({
                 wx.addCard({
                     cardList: [result],
                     success: function (res) {
-                        if (callbacks){
+                        if (callback){
                             wx.showLoading()
                             setTimeout(function(){
-                                callbacks()
+                                callback()
                                 console.log("同步到微信卡包成功++++>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>")
-                                wx.showLoading()
+                                wx.hideLoading()
                                 wx.showModal({
                                     title: '领取成功',
                                     content: '微信支付即自动核销，每次支付仅限使用一张优惠券',
@@ -202,7 +206,7 @@ App({
     //领取优惠券
     getCoupon: function (e) {
         var that = this
-        
+        const currPage = that.currPage()
         var parmas = {
             cardIds: e.target.dataset.id,
             openId: that.api.openId,
@@ -256,19 +260,15 @@ App({
                 merchantId: that.api.merchantId
             }
             that.syncCopuonToWechat(parmas,setStat)
-
             function setStat(){
-                let currPage = that.currPage()
                 let _couponList = currPage.data.couponList
                 _couponList.items[couponIndex].receive = false
                 _couponList.items[couponIndex].couponNo = couponNo
                 console.log("修改状态》》》》》》》》》》》",_couponList)
-                
                 currPage.setData({
                     couponList: _couponList
                 })
             }
-
         })
     },
     regCard: function (data){
@@ -315,7 +315,6 @@ App({
                             //         }
                             //     }
                             // })
-                            
                             if (currPage.data.userLimit === 0){
                                 wx.showModal({
                                     title: '提示',

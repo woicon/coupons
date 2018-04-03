@@ -146,13 +146,21 @@
         </view>
         <view wx:if="{{item.receive}}" 
         class='coupons-get'  
-        catchtap="getCoupon"
+        catchtap="{{lockGet?'':'getCoupon'}}"
         data-id="{{item.cardId}}"
         data-cardId="{{item.wechatCardId}}"
         data-merchantId="{{item.merchantId}}"
-  
         hover-class='coupons-get-hover'
-        data-index="{{index}}">领取</view>
+        data-index="{{index}}"> 
+            <block wx:if="{{lockGet}}">
+                <view class='loading-bottom button-loading'>
+                    <view></view><view></view><view></view>
+                </view>
+            </block>
+            <block wx:else>
+            领取
+            </block>
+        </view>
         <view  class='coupons-get coupons-get-disable' wx:else><view>已领取</view></view>
     </view>
 </template>

@@ -30,6 +30,8 @@ Page({
         indexCouponMore: true,
         indexBottom: false,
         memberCouponLoad:true,
+        lockGet:false,
+        detailBack:false,
         tabBar: [
             {
                 pagePath: "index",
@@ -99,7 +101,7 @@ Page({
                     categoryList: catdata.categoryList,
                     lessMenu: lessMenu,
                     menuNum: menuNum,
-                    catId: catdata.categoryList[0].categoryId,
+                    //catId: catdata.categoryList[0].categoryId,
                     userLimit: catdata.userLimit,
                     regStat: (that.data.isMember || catdata.userLimit === 0) ? true : false
                 }
@@ -266,7 +268,7 @@ Page({
         that.couponLoad({ catId: e.currentTarget.dataset.id}).then((coupon)=>{
             that.setData({
                 currMenu:e.currentTarget.id,
-                currCat:e.currentTarget.dataset.id
+                catId:e.currentTarget.dataset.id
             })
         })
     },
@@ -296,6 +298,9 @@ Page({
             superMerchantId: app.api.merchantId,
             openId: app.api.openId
         }
+        that.setData({
+            detailBack: true
+        })
         if (e.currentTarget.dataset.index) {
             let data = JSON.stringify(that.data.couponList.items[e.currentTarget.dataset.id])
             wx.navigateTo({
@@ -380,9 +385,9 @@ Page({
         that.getMember(sessionKey).then((res)=>{
             that.couponCategory()
             .then((catdata) => {
-                console.log(catdata)
+                //console.log(catdata)
                 that.couponLoad({
-                    catId: catdata.categoryList[0].categoryId,
+                    catId: that.data.catId || catdata.categoryList[0].categoryId,
                     page: that.data.page,
                 })
             })
@@ -400,18 +405,23 @@ Page({
     onShow: function () {
         let that = this
         console.log("onshow")
-        try {
-            let memberInfo = wx.getStorageSync("memberCardInfo")
-            let sessionKey = wx.getStorageSync("sessionKey")
-            if (sessionKey) {
-                that.resPage(sessionKey)
-            } else {
-                app.backResPage = (sessionKey) => {
+        that.setData({
+            lockGet:false
+        })
+        if(!that.data.detailBack){
+            try {
+                let memberInfo = wx.getStorageSync("memberCardInfo")
+                let sessionKey = wx.getStorageSync("sessionKey")
+                if (sessionKey) {
                     that.resPage(sessionKey)
+                } else {
+                    app.backResPage = (sessionKey) => {
+                        that.resPage(sessionKey)
+                    }
                 }
+            } catch (error) {
+                console.log('not success loading', error)
             }
-        } catch (error) {
-            console.log('not success loading', error)
         }
     }
 })

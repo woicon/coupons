@@ -148,6 +148,7 @@ Page({
             console.log(error)
         })
     },
+
     setDetail: function (coupon) {
         let that = this,
             _businessService = coupon.businessService,

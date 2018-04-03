@@ -789,7 +789,8 @@ view, text, navigator {
     /* width:90rpx; */
     background:#FF2828;
     text-align:center;
-    padding:8rpx 24rpx;
+    padding:8rpx 0;
+    width:100rpx;
     color:#fff;
     font-size:28rpx;
     border-radius:4rpx;
@@ -902,6 +903,13 @@ view, text, navigator {
 }
 .nomore{
     animation:sliderInUp linear 0.4s;
+}
+.button-loading{
+    transform: scale(0.7)
+}
+.button-loading>view{
+    background:#fff;
+    
 }
 @keyframes bottomloading{
     0%{
