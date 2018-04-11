@@ -148,7 +148,14 @@ Page({
             console.log(error)
         })
     },
-
+    onHide:function(){
+        const currPage = app.currPage()
+        console.log(currPage.data)
+        currPage.setData({
+            detailBack:false,
+            isDetail:'asdfasdf'
+        })
+    },
     setDetail: function (coupon) {
         let that = this,
             _businessService = coupon.businessService,

@@ -404,20 +404,20 @@ Page({
         let that = this
         console.log("onshow")
         
-        if(!that.data.detailBack){
-            try {
-                let memberInfo = wx.getStorageSync("memberCardInfo")
-                let sessionKey = wx.getStorageSync("sessionKey")
-                if (sessionKey) {
+        
+        try {
+            let memberInfo = wx.getStorageSync("memberCardInfo")
+            let sessionKey = wx.getStorageSync("sessionKey")
+            if (sessionKey) {
+                that.resPage(sessionKey)
+            } else {
+                app.backResPage = (sessionKey) => {
                     that.resPage(sessionKey)
-                } else {
-                    app.backResPage = (sessionKey) => {
-                        that.resPage(sessionKey)
-                    }
                 }
-            } catch (error) {
-                console.log('not success loading', error)
             }
+        } catch (error) {
+            console.log('not success loading', error)
         }
+        
     }
 })
