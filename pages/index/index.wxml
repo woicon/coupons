@@ -47,7 +47,6 @@
                 </view>
             </block>
             
-            
             <view class='coupons-list {{(banner==null)?"coupons-list-top":""}}'>
                 <block wx:if="{{indexCouponLoading}}">
                     <!-- <loading>加载中</loading> -->

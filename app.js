@@ -164,9 +164,6 @@ App({
     syncCopuonToWechat: function (parmas,callback) {
         let that = this
         const currPage = that.currPage()
-        currPage.setData({
-            lockGet:true
-        })
         this.request("wechatJsTicket", parmas).then((data) => {
             wx.hideLoading()
             let result = data.data.result[0]
@@ -207,6 +204,7 @@ App({
     getCoupon: function (e) {
         var that = this
         const currPage = that.currPage()
+        console.log('click',e)
         var parmas = {
             cardIds: e.target.dataset.id,
             openId: that.api.openId,
@@ -249,7 +247,6 @@ App({
         //         that.syncCopuonToWechat(parmas)
         //     })
         // }
-
         //不是会员的用户领取优惠券
         wx.showLoading()
         that.request("couponNo").then((res) => {
