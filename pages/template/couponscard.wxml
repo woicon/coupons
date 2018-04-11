@@ -146,13 +146,13 @@
         </view>
         <view wx:if="{{item.receive}}" 
         class='coupons-get'  
-        catchtap="{{lockGet?'':'getCoupon'}}"
+        catchtap="{{lockGet == index?'':'getCoupon'}}"
         data-id="{{item.cardId}}"
         data-cardId="{{item.wechatCardId}}"
         data-merchantId="{{item.merchantId}}"
         hover-class='coupons-get-hover'
         data-index="{{index}}"> 
-            <block wx:if="{{lockGet}}">
+            <block wx:if="{{lockGet == index}}">
                 <view class='loading-bottom button-loading'>
                     <view></view><view></view><view></view>
                 </view>

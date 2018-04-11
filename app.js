@@ -190,6 +190,9 @@ App({
                     },
                     fail:function(error){
                         console.log(error)
+                        currPage.setData({
+                            lockGet: null
+                        })  
                     }
                 });
             } else {
@@ -205,6 +208,9 @@ App({
         var that = this
         const currPage = that.currPage()
         console.log('click',e)
+        currPage.setData({
+            lockGet: e.currentTarget.dataset.index
+        })
         var parmas = {
             cardIds: e.target.dataset.id,
             openId: that.api.openId,

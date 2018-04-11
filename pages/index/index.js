@@ -403,8 +403,9 @@ Page({
     onShow: function () {
         let that = this
         console.log("onshow")
-        
-        
+        that.setData({
+            lockGet:null
+        })    
         try {
             let memberInfo = wx.getStorageSync("memberCardInfo")
             let sessionKey = wx.getStorageSync("sessionKey")
